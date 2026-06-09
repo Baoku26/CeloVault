@@ -5,8 +5,23 @@ export function startHealthServer(engine: AgentEngine, port = 3001) {
   const app = express();
   app.use(express.json());
 
+  // CORS — allow Next.js frontend (Vercel) to call this directly or via proxy
+  app.use((_req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, PATCH, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    next();
+  });
+  app.options("*", (_req, res) => res.sendStatus(204));
+
   app.get("/health", (_req, res) => {
-    res.json({ status: "ok", timestamp: Date.now() });
+    const status = engine.getStatus();
+    res.json({
+      status: "ok",
+      timestamp: Date.now(),
+      address: status.agentAddress,
+      uptime: process.uptime() | 0,
+    });
   });
 
   app.get("/status", (_req, res) => {
@@ -21,15 +36,25 @@ export function startHealthServer(engine: AgentEngine, port = 3001) {
     });
   });
 
-  // Allow UI to update config at runtime (autoExecute toggle, targetRate)
+  // PATCH /config — update config fields and/or toggle active state
   app.patch("/config", (req, res) => {
-    const { targetRate, autoExecute, slippageBps, intervalMs } = req.body as Record<string, unknown>;
+    const { active, targetRate, autoExecute, slippageBps, intervalMs } =
+      req.body as Record<string, unknown>;
+
+    // Config fields
     const patch: Record<string, unknown> = {};
     if (typeof targetRate === "number") patch.targetRate = targetRate;
     if (typeof autoExecute === "boolean") patch.autoExecute = autoExecute;
     if (typeof slippageBps === "number") patch.slippageBps = slippageBps;
     if (typeof intervalMs === "number") patch.intervalMs = intervalMs;
-    engine.updateConfig(patch);
+    if (Object.keys(patch).length > 0) engine.updateConfig(patch);
+
+    // Active toggle — pause/resume without killing the process
+    if (typeof active === "boolean") {
+      if (active) engine.resume();
+      else engine.pause();
+    }
+
     res.json({ ok: true });
   });
 

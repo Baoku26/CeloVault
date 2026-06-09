@@ -32,15 +32,9 @@ export function AgentConfigForm() {
   const [saving, setSaving] = useState(false);
 
   async function handleSave() {
-    const agentApiUrl = process.env.NEXT_PUBLIC_AGENT_API_URL;
-    if (!agentApiUrl) {
-      toast.error("Agent not deployed", { description: "Set NEXT_PUBLIC_AGENT_API_URL to control the agent." });
-      return;
-    }
-
     setSaving(true);
     try {
-      const res = await fetch(`${agentApiUrl}/config`, {
+      const res = await fetch("/api/agent/config", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -50,7 +44,7 @@ export function AgentConfigForm() {
           intervalMs,
         }),
       });
-      if (!res.ok) throw new Error("Update failed");
+      if (!res.ok) throw new Error(await res.text());
       await refetch();
       toast.success("Config saved");
     } catch {

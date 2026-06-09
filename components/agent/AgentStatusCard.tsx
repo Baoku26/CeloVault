@@ -30,18 +30,14 @@ export function AgentStatusCard() {
   const [toggling, setToggling] = useState(false);
 
   async function handleToggle(next: boolean) {
-    const agentApiUrl = process.env.NEXT_PUBLIC_AGENT_API_URL;
-    if (!agentApiUrl) {
-      toast.error("Agent not deployed", { description: "Set NEXT_PUBLIC_AGENT_API_URL to control the agent." });
-      return;
-    }
     setToggling(true);
     try {
-      await fetch(`${agentApiUrl}/config`, {
+      const res = await fetch("/api/agent/config", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ autoExecute: next }),
+        body: JSON.stringify({ active: next, autoExecute: next }),
       });
+      if (!res.ok) throw new Error(await res.text());
       await refetch();
       toast.success(next ? "Agent activated" : "Agent paused");
     } catch {

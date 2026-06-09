@@ -55,10 +55,25 @@ export class AgentEngine {
     log({ event: "engine:started", intervalMs: this.config.intervalMs, autoExecute: this.config.autoExecute });
   }
 
-  stop() {
+  pause() {
     if (this.intervalHandle) clearInterval(this.intervalHandle);
+    this.intervalHandle = null;
     this.active = false;
-    log({ event: "engine:stopped", totalSwaps: this.totalSwaps });
+    log({ event: "engine:paused", totalSwaps: this.totalSwaps });
+  }
+
+  resume() {
+    if (this.active) return;
+    this.active = true;
+    this.scheduleNextRun();
+    void this.tick();
+    this.intervalHandle = setInterval(() => void this.tick(), this.config.intervalMs);
+    log({ event: "engine:resumed", intervalMs: this.config.intervalMs });
+  }
+
+  stop() {
+    this.pause();
+    log({ event: "engine:shutdown" });
     process.exit(0);
   }
 
