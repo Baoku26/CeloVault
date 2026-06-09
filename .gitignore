@@ -31,3 +31,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.claude
+CLAUDE.md
+memory.md
+planning.md
+task.md
+.agents
+PRODUCT.md

@@ -15,8 +15,8 @@ export function BalanceGrid({ data, isLoading }: BalanceGridProps) {
   if (isLoading && !data) {
     return (
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Skeleton key={i} className="h-[100px] rounded-xl" />
+        {Array.from({ length: 7 }).map((_, i) => (
+          <Skeleton key={i} className="h-[116px] rounded-xl" />
         ))}
       </div>
     );

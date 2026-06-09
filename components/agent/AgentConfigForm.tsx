@@ -56,43 +56,46 @@ export function AgentConfigForm() {
 
   return (
     <div className="space-y-5">
-      <Field label="Target Rate" hint="Minimum NGNm per USDm before the agent swaps">
+      <Field id="target-rate" label="Target Rate" hint="Minimum NGNm per USDm before the agent swaps">
         <div className="flex items-center gap-2">
           <input
+            id="target-rate"
             type="number"
             value={targetRate}
             onChange={(e) => setTargetRate(e.target.value)}
-            className="w-full rounded-lg border border-border bg-zinc-900/50 px-3 py-2 text-sm font-mono text-foreground focus:outline-none focus:ring-1 focus:ring-celo-green/50"
+            className="w-full rounded-lg border border-border bg-surface-nested px-3 py-2 text-sm font-mono text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             placeholder="1600"
           />
-          <span className="text-xs text-muted-foreground whitespace-nowrap">NGNm / USDm</span>
+          <span className="text-xs text-muted-foreground whitespace-nowrap font-mono">NGNm / USDm</span>
         </div>
       </Field>
 
-      <Field label="Slippage Tolerance" hint="Basis points (100 = 1%)">
+      <Field id="slippage" label="Slippage Tolerance" hint="Basis points — 100 = 1%">
         <div className="flex items-center gap-2">
           <input
+            id="slippage"
             type="number"
             value={slippageBps}
             onChange={(e) => setSlippageBps(e.target.value)}
-            className="w-full rounded-lg border border-border bg-zinc-900/50 px-3 py-2 text-sm font-mono text-foreground focus:outline-none focus:ring-1 focus:ring-celo-green/50"
+            className="w-full rounded-lg border border-border bg-surface-nested px-3 py-2 text-sm font-mono text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             placeholder="100"
           />
-          <span className="text-xs text-muted-foreground">{(parseInt(slippageBps) / 100).toFixed(1)}%</span>
+          <span className="text-xs text-muted-foreground font-mono">{(parseInt(slippageBps) / 100).toFixed(1)}%</span>
         </div>
       </Field>
 
-      <Field label="Check Interval" hint="How often the agent evaluates rates">
-        <div className="flex gap-2">
+      <Field id="interval" label="Check Interval" hint="How often the agent evaluates rates">
+        <div className="flex gap-2" role="group" aria-label="Check interval">
           {INTERVALS.map((opt) => (
             <button
               key={opt.value}
               onClick={() => setIntervalMs(opt.value)}
+              aria-pressed={intervalMs === opt.value}
               className={cn(
                 "flex-1 rounded-lg border py-1.5 text-xs font-mono transition-colors",
                 intervalMs === opt.value
                   ? "border-celo-green/50 bg-celo-green/10 text-celo-green"
-                  : "border-border text-muted-foreground hover:border-zinc-600"
+                  : "border-border text-muted-foreground hover:border-border-strong"
               )}
             >
               {opt.label}
@@ -126,12 +129,12 @@ export function AgentConfigForm() {
   );
 }
 
-function Field({ label, hint, children }: { label: string; hint: string; children: React.ReactNode }) {
+function Field({ id, label, hint, children }: { id: string; label: string; hint: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1.5">
       <div>
-        <p className="text-sm font-medium">{label}</p>
-        <p className="text-xs text-muted-foreground">{hint}</p>
+        <label htmlFor={id} className="text-sm font-medium cursor-pointer">{label}</label>
+        <p className="text-xs text-muted-foreground mt-0.5">{hint}</p>
       </div>
       {children}
     </div>

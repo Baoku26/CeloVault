@@ -51,7 +51,7 @@ export function RateDisplay({
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 4 }}
-            className="text-3xl font-mono font-semibold tabular-nums text-foreground"
+            className="text-2xl font-mono font-medium tabular-nums text-foreground"
           >
             {rate > 0 ? rate.toLocaleString("en", { maximumFractionDigits: 2 }) : "—"}
           </motion.span>
@@ -97,7 +97,7 @@ function SourceBadge({ source }: { source: "mento" | "uniswap-v3" | null }) {
         "text-[10px] px-1.5 py-0 h-4 font-mono uppercase tracking-wider border",
         source === "mento"
           ? "border-celo-green/40 text-celo-green"
-          : "border-blue-500/40 text-blue-400"
+          : "border-border text-muted-foreground"
       )}
     >
       {source === "mento" ? "Mento" : "Uniswap V3"} ✓ best

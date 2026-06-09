@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-09T00:00:00.000Z",
+  "title": "Design System: CeloVault",
+  "extensions": {
+    "colorMeta": {
+      "harmattan-green": {
+        "role": "primary",
+        "displayName": "Harmattan Green",
+        "canonical": "#35D07F",
+        "tonalRamp": ["#0A1F14", "#12331F", "#1B4D2F", "#29B372", "#35D07F", "#65DCA5", "#97E7C2", "#C9F3DF"]
+      },
+      "market-gold": {
+        "role": "secondary",
+        "displayName": "Market Gold",
+        "canonical": "#FBCC5C",
+        "tonalRamp": ["#1A1000", "#5A4102", "#956C04", "#E0A206", "#F9B710", "#FBCC5C", "#FCDE92", "#FEEDC3"]
+      },
+      "void-black": {
+        "role": "neutral",
+        "displayName": "Void Black",
+        "canonical": "#0A0A0A",
+        "tonalRamp": ["#0A0A0A", "#121212", "#171717", "#1C1C1C", "#262626", "#333333", "#525252", "#737373"]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Surface",
+        "canonical": "#121212",
+        "tonalRamp": ["#0A0A0A", "#121212", "#171717", "#1C1C1C", "#262626", "#333333", "#525252", "#737373"]
+      },
+      "surface-nested": {
+        "role": "neutral",
+        "displayName": "Nested Surface",
+        "canonical": "#1A1A1A",
+        "tonalRamp": ["#0A0A0A", "#121212", "#1A1A1A", "#212121", "#2A2A2A", "#333333", "#525252", "#737373"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#FAFAFA",
+        "tonalRamp": ["#111111", "#333333", "#555555", "#777777", "#999999", "#BBBBBB", "#DDDDDD", "#FAFAFA"]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "canonical": "#999999",
+        "tonalRamp": ["#111111", "#333333", "#555555", "#777777", "#999999", "#BBBBBB", "#DDDDDD", "#FAFAFA"]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Border",
+        "canonical": "#212121",
+        "tonalRamp": ["#0A0A0A", "#121212", "#1A1A1A", "#212121", "#2A2A2A", "#333333", "#525252", "#737373"]
+      },
+      "error-red": {
+        "role": "tertiary",
+        "displayName": "Error Red",
+        "canonical": "#DC2626",
+        "tonalRamp": ["#1A0202", "#3B0505", "#6B0909", "#991212", "#DC2626", "#EF5555", "#F89090", "#FECDCD"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Page headings, section titles. Once per major surface." },
+      "headline": { "displayName": "Headline", "purpose": "Card section headers, sidebar brand mark." },
+      "title": { "displayName": "Title", "purpose": "Component labels, nav item text, list item names." },
+      "body": { "displayName": "Body", "purpose": "Supporting copy, descriptions. Max 65ch line length." },
+      "label": { "displayName": "Label (Mono)", "purpose": "Token symbols, uppercase metadata, status chip text. Geist Mono." },
+      "amount": { "displayName": "Amount (Mono)", "purpose": "Balance figures, rates, all financial quantities. Geist Mono + tabular-nums. Absolute — no exceptions." }
+    },
+    "shadows": [
+      {
+        "name": "agent-glow",
+        "value": "0 0 6px #35D07F",
+        "purpose": "Active agent status dot only. The single glow in the system — appears only when the agent is running. Do not apply elsewhere."
+      }
+    ],
+    "motion": [
+      {
+        "name": "fade-up",
+        "value": "{ initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] } }",
+        "purpose": "Card and stat entrance. Communicates that data has arrived; not decoration."
+      },
+      {
+        "name": "stagger-children",
+        "value": "{ animate: { transition: { staggerChildren: 0.06 } } }",
+        "purpose": "Balance grid stagger. 60ms between children — fast enough to feel live, slow enough to read as sequence."
+      },
+      {
+        "name": "scale-in",
+        "value": "{ initial: { opacity: 0, scale: 0.97 }, animate: { opacity: 1, scale: 1 }, transition: { duration: 0.2 } }",
+        "purpose": "Modal and success state entrance. Slightly tighter than fade-up."
+      },
+      {
+        "name": "success-spring",
+        "value": "{ initial: { scale: 0 }, animate: { scale: 1 }, transition: { type: 'spring', stiffness: 400, damping: 20, delay: 0.1 } }",
+        "purpose": "Swap confirmed icon only. The one spring animation in the system — bounded by success state."
+      },
+      {
+        "name": "reduced-motion-fallback",
+        "value": "opacity crossfade, 0.15s ease-out",
+        "purpose": "@media (prefers-reduced-motion: reduce) replacement for all above animations."
+      }
+    ],
+    "breakpoints": [
+      { "name": "minipay", "value": "360px", "purpose": "Opera MiniPay minimum viewport. Primary mobile target, not a degraded fallback." },
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px", "purpose": "Sidebar becomes visible; layout shifts from single-column to sidebar + content." },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Primary action on any screen. Confirm swap, activate agent, submit form.",
+      "html": "<button class=\"ds-btn-primary\">Review Swap</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; background-color: #35D07F; color: #09090B; font-family: 'Geist', system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; padding: 10px 16px; border-radius: 6px; border: none; cursor: pointer; transition: background-color 0.15s ease; white-space: nowrap; height: 40px; } .ds-btn-primary:hover { background-color: #2EBA70; } .ds-btn-primary:focus-visible { outline: 2px solid #35D07F; outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; pointer-events: none; cursor: not-allowed; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary or back action. Appears alongside Primary in two-button rows.",
+      "html": "<button class=\"ds-btn-outline\">Back</button>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; justify-content: center; background-color: transparent; color: #FAFAFA; font-family: 'Geist', system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; padding: 10px 16px; border-radius: 6px; border: 1px solid #212121; cursor: pointer; transition: background-color 0.15s ease, border-color 0.15s ease; white-space: nowrap; height: 40px; } .ds-btn-outline:hover { background-color: #121212; border-color: #333333; } .ds-btn-outline:focus-visible { outline: 2px solid #35D07F; outline-offset: 2px; } .ds-btn-outline:disabled { opacity: 0.5; pointer-events: none; }"
+    },
+    {
+      "name": "Balance Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Displays a single stablecoin balance. Stagger-animated in a responsive grid on the dashboard.",
+      "html": "<div class=\"ds-balance-card\"><div class=\"ds-balance-card__header\"><div class=\"ds-balance-card__token\"><span class=\"ds-balance-card__flag\">🇳🇬</span><span class=\"ds-balance-card__symbol\">NGNm</span></div></div><div class=\"ds-balance-card__amount\">12,450.00</div><div class=\"ds-balance-card__usd\">≈ $8.14</div></div>",
+      "css": ".ds-balance-card { background-color: #121212; border: 1px solid #212121; border-radius: 12px; padding: 16px; transition: border-color 0.2s ease, background-color 0.2s ease; } .ds-balance-card:hover { border-color: #333333; background-color: rgba(23,23,23,0.9); } .ds-balance-card__header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; } .ds-balance-card__token { display: flex; align-items: center; gap: 8px; } .ds-balance-card__flag { font-size: 1rem; line-height: 1; } .ds-balance-card__symbol { font-family: 'Geist Mono', monospace; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #5FDE9A; } .ds-balance-card__amount { font-family: 'Geist Mono', monospace; font-size: 1.5rem; font-weight: 500; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; color: #FAFAFA; } .ds-balance-card__usd { font-family: 'Geist Mono', monospace; font-size: 0.75rem; color: #999999; margin-top: 4px; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Agent Status",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "Active/paused agent indicator with live glow. The only element in the system that uses a glow shadow.",
+      "html": "<div class=\"ds-agent-status ds-agent-status--active\"><div class=\"ds-agent-status__dot\"></div><span class=\"ds-agent-status__label\">Agent</span><span class=\"ds-agent-status__badge\">Active</span></div>",
+      "css": ".ds-agent-status { display: inline-flex; align-items: center; gap: 10px; } .ds-agent-status__dot { width: 8px; height: 8px; border-radius: 50%; background-color: #525252; flex-shrink: 0; transition: background-color 0.2s ease, box-shadow 0.2s ease; } .ds-agent-status--active .ds-agent-status__dot { background-color: #35D07F; box-shadow: 0 0 6px #35D07F; } .ds-agent-status__label { font-family: 'Geist', system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; color: #FAFAFA; } .ds-agent-status__badge { font-family: 'Geist Mono', monospace; font-size: 0.625rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 6px; border-radius: 4px; } .ds-agent-status--active .ds-agent-status__badge { color: #35D07F; background-color: rgba(53, 208, 127, 0.10); } .ds-agent-status:not(.ds-agent-status--active) .ds-agent-status__badge { color: #999999; background-color: transparent; border: 1px solid #212121; }"
+    },
+    {
+      "name": "Sidebar Nav Item",
+      "kind": "nav",
+      "refersTo": "button-ghost-celo",
+      "description": "Navigation item in the left sidebar. Active state shows Harmattan Green icon and pip.",
+      "html": "<a class=\"ds-nav-item ds-nav-item--active\" href=\"#\"><svg class=\"ds-nav-item__icon\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"7\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\"/></svg>Dashboard<span class=\"ds-nav-item__pip\"></span></a>",
+      "css": ".ds-nav-item { display: flex; align-items: center; gap: 12px; border-radius: 6px; padding: 8px 12px; font-family: 'Geist', system-ui, sans-serif; font-size: 0.875rem; font-weight: 400; color: #999999; text-decoration: none; transition: background-color 0.15s ease, color 0.15s ease; position: relative; } .ds-nav-item:hover { background-color: #121212; color: #FAFAFA; } .ds-nav-item--active { background-color: #121212; color: #FAFAFA; font-weight: 500; } .ds-nav-item__icon { width: 16px; height: 16px; flex-shrink: 0; color: inherit; } .ds-nav-item--active .ds-nav-item__icon { color: #35D07F; } .ds-nav-item__pip { display: none; width: 4px; height: 16px; border-radius: 9999px; background-color: #35D07F; margin-left: auto; flex-shrink: 0; } .ds-nav-item--active .ds-nav-item__pip { display: block; }"
+    },
+    {
+      "name": "Swap Tab Selector",
+      "kind": "chip",
+      "refersTo": "button-ghost-celo",
+      "description": "Currency pair selector at the top of the swap card. Active tab uses 2px bottom border, not a filled background.",
+      "html": "<div class=\"ds-swap-tabs\"><button class=\"ds-swap-tab ds-swap-tab--active\">NGN</button><button class=\"ds-swap-tab\">KES</button><button class=\"ds-swap-tab\">GHS</button><button class=\"ds-swap-tab\">EUR</button></div>",
+      "css": ".ds-swap-tabs { display: flex; border-bottom: 1px solid #212121; } .ds-swap-tab { flex: 1; padding: 10px 0; font-family: 'Geist Mono', monospace; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #999999; background-color: transparent; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease; } .ds-swap-tab:hover { color: #FAFAFA; } .ds-swap-tab--active { color: #35D07F; background-color: rgba(53, 208, 127, 0.10); border-bottom-color: #35D07F; }"
+    },
+    {
+      "name": "Data Row List",
+      "kind": "custom",
+      "refersTo": "inner-container",
+      "description": "Confirmation and detail display. Muted label on the left, Mono value on the right. Used in swap confirm and agent config.",
+      "html": "<div class=\"ds-data-list\"><div class=\"ds-data-row\"><span class=\"ds-data-row__label\">You send</span><span class=\"ds-data-row__value\">1.00 USDm</span></div><div class=\"ds-data-row\"><span class=\"ds-data-row__label\">You receive</span><span class=\"ds-data-row__value\">~1,620.00 NGNm</span></div><div class=\"ds-data-row\"><span class=\"ds-data-row__label\">Route</span><span class=\"ds-data-row__value\">Mento Protocol</span></div><div class=\"ds-data-row\"><span class=\"ds-data-row__label\">Gas</span><span class=\"ds-data-row__value\">Paid in USDC</span></div></div>",
+      "css": ".ds-data-list { border: 1px solid #212121; border-radius: 8px; overflow: hidden; } .ds-data-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid #212121; } .ds-data-row:last-child { border-bottom: none; } .ds-data-row__label { font-family: 'Geist', system-ui, sans-serif; font-size: 0.875rem; color: #999999; } .ds-data-row__value { font-family: 'Geist Mono', monospace; font-size: 0.875rem; font-variant-numeric: tabular-nums; color: #FAFAFA; text-align: right; }"
+    },
+    {
+      "name": "Amount Input Field",
+      "kind": "input",
+      "refersTo": "inner-container",
+      "description": "Borderless amount entry within a tonal container. No visible focus ring on the field itself — the container defines the boundary.",
+      "html": "<div class=\"ds-amount-field\"><div class=\"ds-amount-field__meta\"><span class=\"ds-amount-field__label\">You send</span><span class=\"ds-amount-field__badge\">USDm</span></div><input class=\"ds-amount-field__input\" type=\"number\" placeholder=\"0.00\" value=\"1\" /></div>",
+      "css": ".ds-amount-field { background-color: #1A1A1A; border: 1px solid #212121; border-radius: 8px; padding: 16px; } .ds-amount-field__meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; } .ds-amount-field__label { font-family: 'Geist', system-ui, sans-serif; font-size: 0.75rem; color: #999999; text-transform: uppercase; letter-spacing: 0.05em; } .ds-amount-field__badge { font-family: 'Geist Mono', monospace; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: #35D07F; background-color: rgba(53, 208, 127, 0.10); padding: 2px 8px; border-radius: 4px; } .ds-amount-field__input { width: 100%; background: transparent; border: none; outline: none; font-family: 'Geist Mono', monospace; font-size: 1.5rem; font-weight: 500; font-variant-numeric: tabular-nums; color: #FAFAFA; -moz-appearance: textfield; } .ds-amount-field__input::-webkit-outer-spin-button, .ds-amount-field__input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; } .ds-amount-field__input::placeholder { color: rgba(250, 250, 250, 0.2); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Night Watchman",
+    "overview": "The CeloVault interface is the Night Watchman's activity log. The agent operates while the user sleeps — scanning rates every 60 seconds, executing swaps the moment a threshold is crossed, logging every transaction to the Celo blockchain. The dashboard does not offer controls because the agent does not need supervision. It offers a precise, timestamped record of what happened, what is being watched, and what will happen when the next threshold is crossed.\n\nEvery design decision descends from this premise. The surface is near-black (#0A0A0A) because a vigilant tool does not advertise itself. Monospace numerals carry the weight of every balance, rate, address, and countdown. Color appears only when the agent has acted or a threshold has meaning: Harmattan Green for confirmation and live activity, Market Gold for rate emphasis and threshold proximity.\n\nThis system explicitly rejects four aesthetic families: the purple-gradient DeFi aesthetic (glassmorphic panels, neon accents, glowing orbs not earned by state); the Revolut/Wise western neobank look (corporate blue, productivity-optimism, white backgrounds built for London); the SaaS metrics dashboard (navy plus orange, hero-metric template, identical card grids); and the crypto exchange (candlestick density, orderbook panels, trading terminal chrome).",
+    "keyCharacteristics": [
+      "Three-layer tonal depth (Void Black → Surface → Nested Surface) without shadows",
+      "Geist Sans for everything human-authored; Geist Mono for every financial figure, address, and hash",
+      "Harmattan Green as a signal color: reserved for confirmed agent actions, active states, and primary CTAs",
+      "Market Gold for rate threshold emphasis and secondary data highlights",
+      "Terminal-adjacent interaction: borderless inputs inside tonal containers, flat buttons, tint-shift hover states",
+      "The single glow (0 0 6px #35D07F) appears only on the active agent status dot — earned by state, never decorative"
+    ],
+    "rules": [
+      { "name": "The Signal Rule", "body": "Harmattan Green and Market Gold appear only in response to data or agent state — not as background decoration, brand color on static chrome, or gradient components. If a screen has no confirmed action and no active threshold, neither color appears on it.", "section": "colors" },
+      { "name": "The One-Nesting Rule", "body": "Surface tones stack at most two levels: Surface (#121212) containing Nested Surface (#1A1A1A). A third nested level is a layout problem, not a color problem.", "section": "colors" },
+      { "name": "The Mono Gate Rule", "body": "If a string was generated by arithmetic or read from onchain state — balance, rate, fee, tx hash, countdown timer, block number, address — it renders in Geist Mono with font-variant-numeric: tabular-nums. No exceptions. Human-authored copy renders in Geist Sans.", "section": "typography" },
+      { "name": "The Scale Economy Rule", "body": "Four type sizes in active use: 24px (amount), 18px (headline), 14px (body/title), 12px (label). Do not introduce intermediate sizes to resolve spacing problems. Solve layout in the layout.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "At rest, every surface is flat. Depth is established through tone alone. If a component appears to need a drop shadow for visual separation, the layout needs restructuring, not a new shadow.", "section": "elevation" },
+      { "name": "The Single Glow Rule", "body": "box-shadow: 0 0 6px #35D07F appears only on the active agent status dot. Do not apply glow to buttons, cards, inputs, tabs, or navigation elements. Its scarcity makes it instantly legible as a live-agent signal.", "section": "elevation" },
+      { "name": "The Two-Level Rule", "body": "Cards contain Inner Containers. Inner Containers contain data. Nothing nests deeper.", "section": "components" },
+      { "name": "The 2px Bottom Border Rule", "body": "Active tab state is communicated by a 2px border-bottom at Harmattan Green. The tint background is secondary context. Never use a filled Harmattan Green background for tab active state.", "section": "components" }
+    ],
+    "dos": [
+      "Do use Harmattan Green (#35D07F) only on confirmed states, active agent indicators, and primary CTAs. Every additional use dilutes its signal value.",
+      "Do render every financial figure — balances, rates, fees, tx hashes, addresses, countdowns — in Geist Mono with font-variant-numeric: tabular-nums. The Mono Gate Rule is absolute.",
+      "Do use three surface tones (Void Black → Surface → Nested Surface) for visual hierarchy before considering any other approach.",
+      "Do keep placeholder text in Muted (#999999) and verify it exceeds 4.5:1 on its parent surface.",
+      "Do write all button labels as verb + object: 'Review Swap', 'Confirm Swap', 'Activate agent'.",
+      "Do show Market Gold (#FBCC5C) on rate values when a threshold is approached or active.",
+      "Do treat the MiniPay mobile viewport (360px minimum) as the primary responsive target.",
+      "Do wrap card and stat entrances in Framer Motion fadeUp (0.25s, [0.16, 1, 0.3, 1] easing).",
+      "Do provide @media (prefers-reduced-motion: reduce) alternatives for all Framer Motion animations."
+    ],
+    "donts": [
+      "Don't use purple gradients, neon accents (other than Harmattan Green in state contexts), or glassmorphic panels.",
+      "Don't apply the Revolut or Wise visual language: corporate blue, white or light backgrounds, soft color pops on a light surface.",
+      "Don't build a hero-metric card (big number, small label, gradient accent, supporting stats row). The agent's swap count is data, not a hero.",
+      "Don't render crypto exchange UI: candlestick charts, orderbook depth panels, red/green trading terminal density.",
+      "Don't use border-left or border-right greater than 1px as a colored stripe on cards, list items, or alerts.",
+      "Don't use gradient text (background-clip: text with a gradient). Emphasis is weight or size; never gradient.",
+      "Don't nest more than two surface levels. Card → Inner Container is the limit.",
+      "Don't replicate box-shadow: 0 0 6px #35D07F on anything except the active agent status dot.",
+      "Don't build identical card grids without distinct per-item identity.",
+      "Don't introduce colors outside the defined palette without updating DESIGN.md.",
+      "Don't add all-caps body copy or uppercase running prose. Uppercase is reserved for Label-role tokens only."
+    ]
+  }
+}

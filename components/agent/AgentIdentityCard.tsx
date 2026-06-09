@@ -14,7 +14,7 @@ export function AgentIdentityCard() {
   const { data: status, isLoading } = useAgentStatus();
 
   if (isLoading) {
-    return <Skeleton className="h-36 rounded-lg" />;
+    return <Skeleton className="h-36 rounded-xl" />;
   }
 
   const agentId = status?.agentId;
@@ -27,14 +27,17 @@ export function AgentIdentityCard() {
 
   return (
     <motion.div {...fadeUp}>
-      <Card variant="fin" className={cn("relative overflow-hidden", isRegistered && "border-celo-green/30")}>
-        {isRegistered && (
-          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-celo-green/50 to-transparent" />
+      <Card
+        variant="fin"
+        className={cn(
+          "relative overflow-hidden",
+          isRegistered && "border-celo-green/30 border-t-celo-green/50"
         )}
+      >
         <CardContent className="p-4">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-md bg-surface flex items-center justify-center border border-border">
+              <div className="w-8 h-8 rounded-md bg-surface-nested flex items-center justify-center border border-border">
                 <Bot className="h-4 w-4 text-celo-green" />
               </div>
               <div>
@@ -43,31 +46,18 @@ export function AgentIdentityCard() {
               </div>
             </div>
             <Badge variant={isRegistered ? "success" : "outline"}>
-              {isRegistered ? "Registered" : "Unregistered"}
+              {isRegistered ? "REGISTERED" : "UNREGISTERED"}
             </Badge>
           </div>
 
-          <div className="space-y-2 text-xs">
+          <div className="space-y-2.5">
             {agentId && (
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Agent ID</span>
-                <span className="font-mono text-foreground" data-slot="address">
-                  #{agentId}
-                </span>
-              </div>
+              <DataRow label="Agent ID" value={`#${agentId}`} />
             )}
             {agentAddress && (
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Wallet</span>
-                <span className="font-mono text-foreground" data-slot="address">
-                  {shortenAddress(agentAddress)}
-                </span>
-              </div>
+              <DataRow label="Wallet" value={shortenAddress(agentAddress)} isAddress />
             )}
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Standard</span>
-              <span className="text-foreground">ERC-8004 v1</span>
-            </div>
+            <DataRow label="Standard" value="ERC-8004 v1" isAddress={false} mono={false} />
           </div>
 
           {isRegistered && (
@@ -75,7 +65,7 @@ export function AgentIdentityCard() {
               href={scanUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-3 flex items-center gap-1.5 text-xs text-celo-green hover:text-celo-green/80 transition-colors"
+              className="mt-4 flex items-center gap-1.5 text-xs text-celo-green hover:text-celo-green/80 transition-colors"
             >
               <Shield className="h-3 w-3" />
               View on 8004scan
@@ -84,9 +74,9 @@ export function AgentIdentityCard() {
           )}
 
           {!isRegistered && (
-            <p className="mt-3 text-xs text-muted-foreground">
+            <p className="mt-4 text-xs text-muted-foreground">
               Run{" "}
-              <code className="font-mono bg-surface px-1 py-0.5 rounded text-foreground">
+              <code className="font-mono bg-surface-nested px-1 py-0.5 rounded text-foreground">
                 pnpm agent:register
               </code>{" "}
               to register on Celo Sepolia.
@@ -95,5 +85,29 @@ export function AgentIdentityCard() {
         </CardContent>
       </Card>
     </motion.div>
+  );
+}
+
+function DataRow({
+  label,
+  value,
+  isAddress = true,
+  mono = true,
+}: {
+  label: string;
+  value: string;
+  isAddress?: boolean;
+  mono?: boolean;
+}) {
+  return (
+    <div className="flex items-center justify-between py-0.5">
+      <span className="text-xs text-muted-foreground">{label}</span>
+      <span
+        className={cn("text-xs text-foreground", mono && "font-mono")}
+        data-slot={isAddress ? "address" : undefined}
+      >
+        {value}
+      </span>
+    </div>
   );
 }

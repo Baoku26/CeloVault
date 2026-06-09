@@ -97,16 +97,17 @@ export function FXRateChart({
           <XAxis dataKey="t" hide />
           <YAxis
             domain={[minRate - padding, maxRate + padding]}
-            tick={{ fontSize: 10, fill: "#71717a" }}
+            tick={{ fontSize: 10, fill: "#999999" }}
             width={52}
             tickFormatter={(v: number) => v.toLocaleString("en", { maximumFractionDigits: 0 })}
           />
           <Tooltip
             contentStyle={{
-              background: "#18181b",
-              border: "1px solid #3f3f46",
+              background: "#121212",
+              border: "1px solid #212121",
               borderRadius: 6,
               fontSize: 11,
+              color: "#FAFAFA",
             }}
             labelFormatter={(t: number) =>
               new Date(t * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
@@ -115,7 +116,7 @@ export function FXRateChart({
           />
           <ReferenceLine
             y={avgRate}
-            stroke="#3f3f46"
+            stroke="#333333"
             strokeDasharray="3 3"
             strokeWidth={1}
           />

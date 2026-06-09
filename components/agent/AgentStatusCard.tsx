@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAgentStatus } from "@/hooks/useAgentStatus";
 import { cn } from "@/lib/utils";
-import { Bot, Zap, Clock, TrendingUp } from "lucide-react";
+import { Bot } from "lucide-react";
 import { toast } from "sonner";
 
 function Countdown({ nextRun }: { nextRun: number }) {
@@ -57,17 +57,18 @@ export function AgentStatusCard() {
     <motion.div
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
       className="rounded-xl border border-border bg-surface p-4"
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2.5">
           <div className={cn(
-            "w-2 h-2 rounded-full",
+            "w-2 h-2 rounded-full shrink-0",
             active ? "bg-celo-green shadow-[0_0_6px_#35D07F]" : "bg-zinc-600"
           )} />
           <span className="text-sm font-medium">Agent</span>
-          <Badge variant={active ? "success" : "outline"} className="text-[10px] px-1.5 h-4">
-            {active ? "Active" : "Paused"}
+          <Badge variant={active ? "success" : "outline"}>
+            {active ? "ACTIVE" : "PAUSED"}
           </Badge>
         </div>
         <Switch
@@ -78,27 +79,21 @@ export function AgentStatusCard() {
         />
       </div>
 
-      <div className="grid grid-cols-3 gap-3 text-center">
-        <Stat
-          icon={<Zap className="h-3.5 w-3.5" />}
-          label="Swaps"
-          value={data?.totalSwaps?.toString() ?? "0"}
-        />
-        <Stat
-          icon={<TrendingUp className="h-3.5 w-3.5" />}
-          label="Score"
+      <div className="grid grid-cols-3 gap-3">
+        <StatTile label="SWAPS" value={data?.totalSwaps?.toString() ?? "0"} />
+        <StatTile
+          label="SCORE"
           value={data?.reputationScore ? `${data.reputationScore}/100` : "—"}
         />
-        <Stat
-          icon={<Clock className="h-3.5 w-3.5" />}
-          label="Next run"
+        <StatTile
+          label="NEXT RUN"
           value={data?.nextRun ? <Countdown nextRun={data.nextRun} /> : "—"}
         />
       </div>
 
       {data?.lastSwap && (
         <div className="mt-3 pt-3 border-t border-border text-xs text-muted-foreground flex items-center justify-between">
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1.5">
             <Bot className="h-3 w-3" />
             Last swap
           </span>
@@ -107,6 +102,7 @@ export function AgentStatusCard() {
             target="_blank"
             rel="noreferrer"
             className="font-mono hover:text-foreground transition-colors"
+            data-slot="address"
           >
             {data.lastSwap.txHash.slice(0, 10)}…
           </a>
@@ -116,12 +112,11 @@ export function AgentStatusCard() {
   );
 }
 
-function Stat({ icon, label, value }: { icon: React.ReactNode; value: React.ReactNode; label: string }) {
+function StatTile({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="rounded-lg bg-zinc-900/50 p-2">
-      <div className="flex justify-center text-muted-foreground mb-1">{icon}</div>
-      <div className="text-sm font-medium">{value}</div>
-      <div className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">{label}</div>
+    <div className="rounded-lg bg-surface-nested p-2.5 text-center">
+      <div className="text-sm font-mono font-medium tabular-nums text-foreground">{value}</div>
+      <div className="text-xs font-mono text-muted-foreground tracking-[0.04em] mt-1 uppercase">{label}</div>
     </div>
   );
 }

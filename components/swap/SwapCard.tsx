@@ -104,9 +104,9 @@ export function SwapCard() {
               className="space-y-4"
             >
               {/* You send */}
-              <div className="rounded-lg border border-border bg-zinc-900/50 p-4">
+              <div className="rounded-lg border border-border bg-surface-nested p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-muted-foreground uppercase tracking-wider">You send</span>
+                  <span className="text-xs text-muted-foreground">You send</span>
                   <Badge variant="USDm">USDm</Badge>
                 </div>
                 <input
@@ -120,15 +120,13 @@ export function SwapCard() {
               </div>
 
               <div className="flex justify-center">
-                <div className="rounded-full border border-border bg-background p-1.5">
-                  <ArrowDown className="h-3.5 w-3.5 text-muted-foreground" />
-                </div>
+                <ArrowDown className="h-3.5 w-3.5 text-muted-foreground" />
               </div>
 
               {/* You receive */}
-              <div className="rounded-lg border border-border bg-zinc-900/50 p-4">
+              <div className="rounded-lg border border-border bg-surface-nested p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-muted-foreground uppercase tracking-wider">You receive</span>
+                  <span className="text-xs text-muted-foreground">You receive</span>
                   <Badge variant={pair.tokenOut as keyof object}>{pair.tokenOut}</Badge>
                 </div>
                 <div className="text-2xl font-mono font-medium tabular-nums text-foreground">
@@ -159,9 +157,9 @@ export function SwapCard() {
               initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
               className="space-y-4"
             >
-              <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Confirm swap</p>
+              <p className="text-sm font-medium">Confirm swap</p>
 
-              <div className="rounded-lg border border-border divide-y divide-border text-sm">
+              <div className="rounded-lg border border-border bg-surface-nested divide-y divide-border text-sm">
                 {[
                   { label: "You send",    value: `${amount} ${pair.tokenIn}` },
                   { label: "You receive", value: `~${amountOut} ${pair.tokenOut}` },
@@ -172,7 +170,7 @@ export function SwapCard() {
                 ].map(({ label, value }) => (
                   <div key={label} className="flex justify-between px-4 py-2.5">
                     <span className="text-muted-foreground">{label}</span>
-                    <span className="font-mono text-right">{value}</span>
+                    <span className="font-mono tabular-nums text-foreground text-right">{value}</span>
                   </div>
                 ))}
               </div>

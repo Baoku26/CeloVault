@@ -20,9 +20,7 @@ export default function AgentPage() {
       <div className="grid gap-4 sm:grid-cols-2">
         <AgentIdentityCard />
         <div className="rounded-xl border border-border bg-surface p-4">
-          <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-3">
-            Reputation
-          </p>
+          <p className="text-sm font-medium mb-3">Reputation</p>
           <ReputationBadge />
           <p className="text-xs text-muted-foreground mt-3">
             Score updates after each swap. Feedback submitted to ERC-8004 Reputation Registry.
@@ -32,9 +30,7 @@ export default function AgentPage() {
 
       {/* Config */}
       <div className="rounded-xl border border-border bg-surface p-5">
-        <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-5">
-          Configuration
-        </p>
+        <p className="text-sm font-medium mb-5">Configuration</p>
         <AgentConfigForm />
       </div>
     </div>

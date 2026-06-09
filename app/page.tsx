@@ -34,9 +34,9 @@ export default function DashboardPage() {
           variants={fadeUp} initial="initial" animate="animate"
           className="rounded-xl border border-border bg-surface p-4 space-y-3"
         >
-          <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <TrendingUp className="h-3.5 w-3.5" />
-            USDm / NGNm live rate
+            <span><span className="font-mono">USDm / NGNm</span> live rate</span>
           </div>
           <RateDisplay tokenIn="USDm" tokenOut="NGNm" amount={1} />
           <FXRateChart tokenIn="USDm" tokenOut="NGNm" />
@@ -45,9 +45,6 @@ export default function DashboardPage() {
 
       {/* Balances */}
       <section className="space-y-3">
-        <h2 className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-          Balances
-        </h2>
 
         {!address && (
           <div className="rounded-xl border border-border bg-surface py-12 text-center text-sm text-muted-foreground">
@@ -64,8 +61,8 @@ export default function DashboardPage() {
               ${balances.totalUsd}
             </span>
             {rates?.mento && (
-              <span className="text-xs text-muted-foreground/60">
-                · 1 USDm = {rates.mento.rate.toLocaleString("en", { maximumFractionDigits: 0 })} NGNm
+              <span className="text-xs font-mono text-muted-foreground tabular-nums">
+                · <span className="font-mono">1 USDm = {rates.mento.rate.toLocaleString("en", { maximumFractionDigits: 0 })} NGNm</span>
               </span>
             )}
           </div>

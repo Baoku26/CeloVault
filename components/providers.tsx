@@ -3,6 +3,7 @@
 import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { MotionConfig } from "framer-motion";
 import { Toaster } from "@/components/ui/sonner";
 import { wagmiConfig } from "@/lib/wagmi";
 import { useState, type ReactNode } from "react";
@@ -32,13 +33,15 @@ export function Providers({ children }: { children: ReactNode }) {
   );
 
   return (
-    <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider theme={celoVaultTheme} modalSize="compact">
-          {children}
-          <Toaster />
-        </RainbowKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+    <MotionConfig reducedMotion="user">
+      <WagmiProvider config={wagmiConfig}>
+        <QueryClientProvider client={queryClient}>
+          <RainbowKitProvider theme={celoVaultTheme} modalSize="compact">
+            {children}
+            <Toaster />
+          </RainbowKitProvider>
+        </QueryClientProvider>
+      </WagmiProvider>
+    </MotionConfig>
   );
 }

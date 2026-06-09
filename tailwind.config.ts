@@ -25,6 +25,7 @@ const config: Config = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         surface: "hsl(var(--surface))",
+        "surface-nested": "hsl(var(--surface-nested))",
         "surface-hover": "hsl(var(--surface-hover))",
         primary: {
           DEFAULT: "hsl(var(--primary))",

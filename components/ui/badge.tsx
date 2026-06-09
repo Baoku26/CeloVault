@@ -3,26 +3,28 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex items-center rounded border px-1.5 py-0.5 text-[10px] font-mono font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       variant: {
-        default: "border-transparent bg-primary text-primary-foreground",
-        secondary: "border-transparent bg-secondary text-secondary-foreground",
-        destructive: "border-transparent bg-destructive text-destructive-foreground",
-        outline: "border-border text-foreground",
-        success: "border-transparent bg-emerald-900/40 text-emerald-400",
-        warning: "border-transparent bg-amber-900/40 text-amber-400",
-        // Token variants
-        USDm: "border-transparent bg-emerald-900/30 text-emerald-400",
-        NGNm: "border-transparent bg-green-900/30 text-green-400",
-        KESm: "border-transparent bg-green-900/30 text-green-500",
-        GHSm: "border-transparent bg-yellow-900/30 text-yellow-400",
-        EURm: "border-transparent bg-blue-900/30 text-blue-400",
-        USDC: "border-transparent bg-blue-900/30 text-blue-500",
-        USDT: "border-transparent bg-teal-900/30 text-teal-400",
-        mento: "border-transparent bg-emerald-900/40 text-emerald-400",
-        "uniswap-v3": "border-transparent bg-pink-900/40 text-pink-400",
+        default:      "border-transparent bg-primary text-primary-foreground",
+        secondary:    "border-border bg-surface-nested text-muted-foreground",
+        outline:      "border-border text-muted-foreground",
+        destructive:  "border-transparent bg-destructive/15 text-destructive",
+        // State signals — only where agent state or confirmed action applies
+        success:      "border-transparent bg-celo-green/10 text-celo-green",
+        warning:      "border-border-strong text-muted-foreground",
+        // Protocol source badges
+        mento:        "border-transparent bg-celo-green/10 text-celo-green",
+        "uniswap-v3": "border-border text-muted-foreground",
+        // Token symbol badges — neutral; the symbol text carries identity
+        USDm:  "border-border bg-surface-nested text-foreground",
+        NGNm:  "border-border bg-surface-nested text-foreground",
+        KESm:  "border-border bg-surface-nested text-foreground",
+        GHSm:  "border-border bg-surface-nested text-foreground",
+        EURm:  "border-border bg-surface-nested text-foreground",
+        USDC:  "border-border bg-surface-nested text-foreground",
+        USDT:  "border-border bg-surface-nested text-foreground",
       },
     },
     defaultVariants: { variant: "default" },
