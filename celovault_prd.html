@@ -1,0 +1,348 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --accent: #35D07F; --accent2: #FBCC5C; --accent3: #6B8CFF; --muted: var(--color-text-secondary); }
+  body, .prd-root { font-family: var(--font-sans); color: var(--color-text-primary); }
+  .prd-root { padding: 0 0 2rem; }
+
+  .hero { padding: 2rem 0 1.5rem; border-bottom: 0.5px solid var(--color-border-tertiary); margin-bottom: 2rem; }
+  .hero-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-success); background: var(--color-background-success); border-radius: 999px; padding: 3px 10px; margin-bottom: 1rem; }
+  .hero-tag .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-text-success); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .hero h1 { font-size: 28px; font-weight: 500; line-height: 1.2; margin-bottom: .5rem; }
+  .hero-sub { font-size: 14px; color: var(--color-text-secondary); line-height: 1.6; max-width: 560px; }
+  .hero-meta { display: flex; gap: 1.5rem; margin-top: 1.25rem; flex-wrap: wrap; }
+  .hero-meta-item { display: flex; flex-direction: column; gap: 2px; }
+  .hero-meta-item .label { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--color-text-tertiary); }
+  .hero-meta-item .val { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+
+  .section { margin-bottom: 2rem; }
+  .section-title { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .1em; color: var(--color-text-tertiary); margin-bottom: 1rem; padding-bottom: .5rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 2rem; }
+  .stat { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: .85rem 1rem; }
+  .stat .n { font-size: 22px; font-weight: 500; line-height: 1; margin-bottom: 4px; }
+  .stat .l { font-size: 12px; color: var(--color-text-secondary); }
+  .stat.green .n { color: var(--color-text-success); }
+  .stat.amber .n { color: var(--color-text-warning); }
+  .stat.blue .n { color: var(--color-text-info); }
+
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: .75rem; }
+  .card-title { font-size: 14px; font-weight: 500; margin-bottom: .4rem; display: flex; align-items: center; gap: 8px; }
+  .card-body { font-size: 13px; color: var(--color-text-secondary); line-height: 1.65; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 999px; }
+  .badge.green { background: var(--color-background-success); color: var(--color-text-success); }
+  .badge.amber { background: var(--color-background-warning); color: var(--color-text-warning); }
+  .badge.blue { background: var(--color-background-info); color: var(--color-text-info); }
+  .badge.red { background: var(--color-background-danger); color: var(--color-text-danger); }
+
+  .track-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+  .track-card { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 1rem; border: 0.5px solid var(--color-border-tertiary); }
+  .track-card.featured { border: 2px solid var(--color-border-success); }
+  .track-card .track-label { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--color-text-tertiary); margin-bottom: 4px; }
+  .track-card .track-name { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  .track-card .track-desc { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+
+  .feature-row { display: flex; gap: .75rem; align-items: flex-start; margin-bottom: .85rem; }
+  .feature-icon { width: 32px; height: 32px; border-radius: var(--border-radius-md); background: var(--color-background-secondary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .feature-icon i { font-size: 16px; color: var(--color-text-secondary); }
+  .feature-text .ft { font-size: 14px; font-weight: 500; line-height: 1.3; }
+  .feature-text .fs { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; margin-top: 2px; }
+
+  .token-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .token-table th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--color-text-tertiary); font-weight: 500; padding: 0 0 .5rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .token-table td { padding: .55rem 0; border-bottom: 0.5px solid var(--color-border-tertiary); vertical-align: top; }
+  .token-table tr:last-child td { border-bottom: none; }
+  .token-table td:first-child { font-weight: 500; width: 80px; }
+  .token-table td:nth-child(2) { color: var(--color-text-secondary); padding-right: 1rem; }
+  .mono { font-family: var(--font-mono); font-size: 11px; color: var(--color-text-secondary); background: var(--color-background-secondary); padding: 1px 5px; border-radius: 4px; }
+
+  .timeline { position: relative; padding-left: 1.5rem; }
+  .timeline::before { content:''; position: absolute; left: 5px; top: 8px; bottom: 8px; width: 0.5px; background: var(--color-border-secondary); }
+  .tl-item { position: relative; margin-bottom: 1.1rem; }
+  .tl-item::before { content:''; position: absolute; left: -1.5rem; top: 6px; width: 10px; height: 10px; border-radius: 50%; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); }
+  .tl-item.done::before { background: var(--color-background-success); border-color: var(--color-text-success); }
+  .tl-day { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .07em; color: var(--color-text-tertiary); margin-bottom: 3px; }
+  .tl-title { font-size: 14px; font-weight: 500; margin-bottom: 3px; }
+  .tl-tasks { font-size: 12px; color: var(--color-text-secondary); line-height: 1.6; }
+
+  .stack-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .stack-pill { font-size: 12px; padding: 3px 10px; border-radius: 999px; border: 0.5px solid var(--color-border-secondary); color: var(--color-text-secondary); }
+
+  .risk-row { display: flex; gap: .6rem; align-items: flex-start; margin-bottom: .65rem; font-size: 13px; }
+  .risk-row .risk-badge { flex-shrink: 0; margin-top: 1px; }
+  .risk-row .risk-text { color: var(--color-text-secondary); line-height: 1.5; }
+  .risk-row .risk-text strong { color: var(--color-text-primary); font-weight: 500; }
+
+  .divider { height: 0.5px; background: var(--color-border-tertiary); margin: 2rem 0; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media(max-width:500px){ .two-col { grid-template-columns: 1fr; } }
+</style>
+
+<div class="prd-root">
+  <h2 class="sr-only">CeloVault — Product Requirements Document for the Celo Onchain Agents Hackathon</h2>
+
+  <div class="hero">
+    <div class="hero-tag"><span class="dot"></span> Celo Onchain Agents Hackathon · Jun 15 deadline</div>
+    <h1>CeloVault</h1>
+    <p class="hero-sub">An autonomous multi-currency wallet agent on Celo that tracks stablecoin balances, auto-swaps at best rates, and pays in local currency — registered as a first-class ERC-8004 onchain agent.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><span class="label">Author</span><span class="val">DML</span></div>
+      <div class="hero-meta-item"><span class="label">Type</span><span class="val">Onchain Agent + Frontend</span></div>
+      <div class="hero-meta-item"><span class="label">Chain</span><span class="val">Celo Mainnet (L2)</span></div>
+      <div class="hero-meta-item"><span class="label">Status</span><span class="val"><span class="badge green">In Progress</span></span></div>
+      <div class="hero-meta-item"><span class="label">Submission</span><span class="val">Jun 15, 2026</span></div>
+    </div>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat green"><div class="n">$5K</div><div class="l">Total prize pool</div></div>
+    <div class="stat amber"><div class="n">7</div><div class="l">Days to deadline</div></div>
+    <div class="stat blue"><div class="n">3</div><div class="l">Hackathon tracks targeted</div></div>
+    <div class="stat"><div class="n">14M+</div><div class="l">MiniPay wallet users</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Hackathon tracks</div>
+    <div class="track-grid">
+      <div class="track-card featured">
+        <div class="track-label">Track 1 <span class="badge green">Primary</span></div>
+        <div class="track-name">Best Agent on Celo</div>
+        <div class="track-desc">Judged on real-world utility, code quality, and UX. CeloVault's NGNm/local-currency focus gives it a compelling Africa narrative.</div>
+      </div>
+      <div class="track-card">
+        <div class="track-label">Track 2</div>
+        <div class="track-name">Most Onchain Transactions</div>
+        <div class="track-desc">Agent auto-swaps on interval = continuous onchain activity. Each balance rebalance = 1 txn. Volume compounds over the submission window.</div>
+      </div>
+      <div class="track-card">
+        <div class="track-label">Track 3</div>
+        <div class="track-name">Highest 8004scan Rank</div>
+        <div class="track-desc">ERC-8004 registration on Celo Mainnet Identity Registry. Agent NFT minted, reputation feedback submitted after each swap.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-title">Problem statement</div>
+    <div class="card">
+      <div class="card-title"><i class="ti ti-world" aria-hidden="true"></i> The problem</div>
+      <div class="card-body">Users in emerging markets (Nigeria, Kenya, Ghana) hold stablecoins across multiple currencies — USDm, NGNm, KESm, EURm — but have no autonomous way to manage them. Manually monitoring balances, finding the best swap rates across DEXs, and paying in the right local currency requires constant attention. A user in Lagos receiving USDm but needing NGNm for local payments has to manually find rates, switch apps, and execute swaps — often at suboptimal rates and with significant friction.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Solution</div>
+    <div class="card">
+      <div class="card-title"><i class="ti ti-robot" aria-hidden="true"></i> CeloVault agent</div>
+      <div class="card-body">An autonomous onchain agent that acts as a smart treasury for multi-currency stablecoin wallets. It monitors balances, detects when rebalancing is needed, queries Mento + Uniswap V3 for best rates, executes swaps autonomously, and reports activity to a real-time dashboard. Gas is paid in USDC via fee abstraction — no CELO needed. The agent is registered on ERC-8004 for onchain discoverability and reputation tracking.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-title">Core features</div>
+
+    <div class="feature-row">
+      <div class="feature-icon"><i class="ti ti-currency-dollar" aria-hidden="true"></i></div>
+      <div class="feature-text">
+        <div class="ft">Multi-currency balance tracker</div>
+        <div class="fs">Reads USDm, NGNm, KESm, GHSm, EURm, USDC, USDT balances from a connected wallet on Celo. Displays live balances on dashboard. Polls every 30s.</div>
+      </div>
+    </div>
+
+    <div class="feature-row">
+      <div class="feature-icon"><i class="ti ti-arrows-exchange" aria-hidden="true"></i></div>
+      <div class="feature-text">
+        <div class="ft">Autonomous swap engine</div>
+        <div class="fs">Agent queries Mento Protocol and Uniswap V3 (on Celo) for live rates on a configured pair (e.g. USDm → NGNm). Executes swap when user-defined threshold is met. Selects best route automatically. Gas paid in USDC via feeCurrency adapter.</div>
+      </div>
+    </div>
+
+    <div class="feature-row">
+      <div class="feature-icon"><i class="ti ti-bell" aria-hidden="true"></i></div>
+      <div class="feature-text">
+        <div class="ft">Rate alert system</div>
+        <div class="fs">User sets a target rate. Agent monitors FX rates across DEXs, logs alerts when target is hit, and can be configured to auto-execute on alert.</div>
+      </div>
+    </div>
+
+    <div class="feature-row">
+      <div class="feature-icon"><i class="ti ti-shield-check" aria-hidden="true"></i></div>
+      <div class="feature-text">
+        <div class="ft">ERC-8004 onchain identity</div>
+        <div class="fs">Agent is registered in the Celo ERC-8004 Identity Registry as an NFT. Registration JSON (name, description, wallet, endpoints) is hosted and pointed to from the NFT. Reputation feedback submitted after each autonomous swap to build on-chain track record.</div>
+      </div>
+    </div>
+
+    <div class="feature-row">
+      <div class="feature-icon"><i class="ti ti-device-mobile" aria-hidden="true"></i></div>
+      <div class="feature-text">
+        <div class="ft">MiniPay compatibility</div>
+        <div class="fs">Frontend detects MiniPay browser wallet via window.ethereum.isMiniPay check and auto-connects. Optimised for mobile viewport. Users on Opera Mini with MiniPay see a native-feel experience.</div>
+      </div>
+    </div>
+
+    <div class="feature-row">
+      <div class="feature-icon"><i class="ti ti-chart-line" aria-hidden="true"></i></div>
+      <div class="feature-text">
+        <div class="ft">Activity dashboard</div>
+        <div class="fs">Next.js/Tailwind frontend showing: live balances, swap history, FX rate chart (Mento rates over time), agent status (active/paused), transaction log with Celoscan links, and ERC-8004 agent card.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-title">Stablecoins in scope</div>
+    <table class="token-table">
+      <thead><tr><th>Token</th><th>Currency</th><th>Priority</th><th>Contract</th></tr></thead>
+      <tbody>
+        <tr><td>NGNm</td><td>Nigerian Naira</td><td><span class="badge green">Core</span></td><td><span class="mono">0xE2702Bd9...</span></td></tr>
+        <tr><td>USDm</td><td>US Dollar (Mento)</td><td><span class="badge green">Core</span></td><td><span class="mono">0x765de816...</span></td></tr>
+        <tr><td>KESm</td><td>Kenyan Shilling</td><td><span class="badge blue">Extended</span></td><td><span class="mono">0x456a3D04...</span></td></tr>
+        <tr><td>GHSm</td><td>Ghanaian Cedi</td><td><span class="badge blue">Extended</span></td><td><span class="mono">0xfAeA5F34...</span></td></tr>
+        <tr><td>EURm</td><td>Euro</td><td><span class="badge blue">Extended</span></td><td><span class="mono">0xd8763cba...</span></td></tr>
+        <tr><td>USDC</td><td>USD Circle</td><td><span class="badge amber">Gas only</span></td><td><span class="mono">0xceba9300...</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-title">Technical architecture</div>
+    <div class="two-col">
+      <div>
+        <div class="card" style="margin-bottom:.75rem">
+          <div class="card-title"><i class="ti ti-layout" aria-hidden="true"></i> Frontend</div>
+          <div class="card-body">
+            <div class="stack-row" style="margin-bottom:.6rem">
+              <span class="stack-pill">Next.js 14</span><span class="stack-pill">TailwindCSS</span><span class="stack-pill">Framer Motion</span><span class="stack-pill">Lucide Icons</span><span class="stack-pill">viem</span><span class="stack-pill">wagmi</span>
+            </div>
+            Dashboard, wallet connect (RainbowKit or custom), live balance polling, FX rate chart, transaction history, agent config panel, MiniPay detection.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-server" aria-hidden="true"></i> Agent backend</div>
+          <div class="card-body">
+            <div class="stack-row" style="margin-bottom:.6rem">
+              <span class="stack-pill">Node.js / TypeScript</span><span class="stack-pill">viem</span><span class="stack-pill">@chaoschain/sdk</span><span class="stack-pill">Mento SDK</span>
+            </div>
+            Wallet with private key. Interval-based balance check. Swap routing logic (Mento → Uniswap V3 fallback). Fee abstraction (USDC adapter). ERC-8004 registration + feedback submission.
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:.75rem">
+          <div class="card-title"><i class="ti ti-link" aria-hidden="true"></i> Onchain contracts used</div>
+          <div class="card-body" style="font-size:12px; line-height:1.8;">
+            <strong>ERC-8004 Identity Registry</strong><br><span class="mono">0x8004A169FB4a3325136EB29fA0ceB6D2e539a432</span><br><br>
+            <strong>ERC-8004 Reputation Registry</strong><br><span class="mono">0x8004BAa17C55a88189AE136b182e5fdA19dE9b63</span><br><br>
+            <strong>USDC Fee Adapter</strong><br><span class="mono">0x2F25deB3848C207fc8E0c34035B3Ba7fC157602B</span><br><br>
+            <strong>Mento Protocol + Uniswap V3</strong><br>Via Celopedia verified addresses
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-cloud" aria-hidden="true"></i> Infrastructure</div>
+          <div class="card-body">
+            <div class="stack-row" style="margin-bottom:.5rem">
+              <span class="stack-pill">Vercel (frontend)</span><span class="stack-pill">Railway (agent)</span><span class="stack-pill">IPFS (agent JSON)</span>
+            </div>
+            Agent runs as a Node.js process on Railway. Celo Mainnet RPC. Agent registration JSON hosted on IPFS via web3.storage or nft.storage.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-title">7-day build timeline</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-day">Day 1 — Jun 8</div>
+        <div class="tl-title">Scaffold + Celo setup</div>
+        <div class="tl-tasks">Next.js project init, Tailwind, viem + Celo chain config, wallet connect. ERC-8004 SDK install. Create agent wallet, fund with USDC for gas. Verify fee abstraction works on testnet.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-day">Day 2 — Jun 9</div>
+        <div class="tl-title">ERC-8004 agent registration</div>
+        <div class="tl-tasks">Write agent registration JSON. Upload to IPFS. Call Identity Registry to mint agent NFT. Verify on 8004scan. Set up reputation feedback submission after swap events.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-day">Day 3 — Jun 10</div>
+        <div class="tl-title">Balance reader + rate oracle</div>
+        <div class="tl-tasks">Read multi-token balances via viem multicall. Query Mento for live FX rates (USDm/NGNm, USDm/KESm). Query Uniswap V3 on Celo as fallback. Return best rate from both sources.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-day">Day 4 — Jun 11</div>
+        <div class="tl-title">Swap engine</div>
+        <div class="tl-tasks">Implement swap execution via Mento SDK. USDC fee abstraction on all txns. Threshold logic (auto-swap when rate > target or balance > min). Swap confirmation + Celoscan link. Submit ERC-8004 reputation feedback post-swap.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-day">Day 5 — Jun 12</div>
+        <div class="tl-title">Frontend dashboard</div>
+        <div class="tl-tasks">Balance cards (all stablecoins). FX rate chart. Agent activity log. Swap history table. MiniPay detection + auto-connect. Agent status toggle (active/paused). Dark mode by default.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-day">Day 6 — Jun 13</div>
+        <div class="tl-title">Deploy + test on Mainnet</div>
+        <div class="tl-tasks">Deploy agent to Railway. Deploy frontend to Vercel. Run live swaps on Celo Mainnet. Verify 8004scan ranking is updating. Stress test swap routing. Fix bugs.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-day">Day 7 — Jun 14</div>
+        <div class="tl-title">Polish + submit</div>
+        <div class="tl-tasks">Record demo video. Write submission README. Screenshot dashboard. Submit to hackathon. Share on Twitter/X tagging @CeloDevs.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-title">Risks and mitigations</div>
+    <div class="risk-row"><span class="badge red risk-badge">High</span><div class="risk-text"><strong>Mento SDK unfamiliar</strong> — Use Celopedia + docs.celo.org swap examples. Fall back to direct Uniswap V3 calldata if Mento SDK is slow to integrate.</div></div>
+    <div class="risk-row"><span class="badge red risk-badge">High</span><div class="risk-text"><strong>7-day timeline is tight</strong> — MVP scope is agent + dashboard. MiniPay and multi-chain support are stretch goals. Ship core loop first.</div></div>
+    <div class="risk-row"><span class="badge amber risk-badge">Med</span><div class="risk-text"><strong>IPFS latency for agent JSON</strong> — Use nft.storage with a pinning service. Cache the URI locally. ERC-8004 only needs the URI at registration time.</div></div>
+    <div class="risk-row"><span class="badge amber risk-badge">Med</span><div class="risk-text"><strong>NGNm liquidity depth on DEXs</strong> — Test swap sizes on testnet first. Start with small amounts. Use slippage tolerance of 1-2%.</div></div>
+    <div class="risk-row"><span class="badge blue risk-badge">Low</span><div class="risk-text"><strong>Railway agent uptime</strong> — Use Railway's always-on deployment. Add a health check endpoint on the agent. Keep agent logic stateless and restartable.</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-title">Success criteria</div>
+    <div class="card">
+      <div class="card-body" style="line-height:2.2; font-size:13px;">
+        <span style="color:var(--color-text-success); margin-right:8px">✓</span> Agent wallet registered on ERC-8004 Identity Registry on Celo Mainnet<br>
+        <span style="color:var(--color-text-success); margin-right:8px">✓</span> Agent executes at least 1 live autonomous swap (USDm → NGNm) on Mainnet<br>
+        <span style="color:var(--color-text-success); margin-right:8px">✓</span> Reputation feedback submitted onchain after swap<br>
+        <span style="color:var(--color-text-success); margin-right:8px">✓</span> Gas paid entirely in USDC — no CELO in agent wallet<br>
+        <span style="color:var(--color-text-success); margin-right:8px">✓</span> Dashboard deployed and publicly accessible on Vercel<br>
+        <span style="color:var(--color-text-success); margin-right:8px">✓</span> MiniPay detection working in Opera Mini<br>
+        <span style="color:var(--color-text-success); margin-right:8px">✓</span> Demo video recorded and submitted by Jun 14<br>
+        <span style="color:var(--color-text-success); margin-right:8px">✓</span> Agent visible and ranked on 8004scan leaderboard
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section" style="margin-bottom:0">
+    <div class="section-title">Stretch goals (post-MVP)</div>
+    <div class="card">
+      <div class="card-body" style="font-size:13px; line-height:2;">
+        <span style="color:var(--color-text-tertiary); margin-right:8px">→</span> x402 HTTP-native payment endpoint on the agent (agent-to-agent payments)<br>
+        <span style="color:var(--color-text-tertiary); margin-right:8px">→</span> Superfluid streaming support for continuous NGNm payment streams<br>
+        <span style="color:var(--color-text-tertiary); margin-right:8px">→</span> ODIS phone-to-wallet lookup for sending to a phone number<br>
+        <span style="color:var(--color-text-tertiary); margin-right:8px">→</span> Agent Visa application (Tourist → Work Visa program) post-hackathon
+      </div>
+    </div>
+  </div>
+</div>

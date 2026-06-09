@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Backgrounds */
+    --background:           0 0% 4%;
+    --foreground:           0 0% 98%;
+    --surface:              0 0% 7%;
+    --surface-hover:        0 0% 9%;
+
+    /* Card */
+    --card:                 0 0% 7%;
+    --card-foreground:      0 0% 98%;
+
+    /* Popover */
+    --popover:              0 0% 7%;
+    --popover-foreground:   0 0% 98%;
+
+    /* Borders */
+    --border:               0 0% 13%;
+    --border-strong:        0 0% 20%;
+    --input:                0 0% 13%;
+    --ring:                 152 63% 52%;
+
+    /* Primary — Celo green */
+    --primary:              152 63% 52%;
+    --primary-foreground:   0 0% 4%;
+
+    /* Secondary */
+    --secondary:            0 0% 13%;
+    --secondary-foreground: 0 0% 98%;
+
+    /* Muted */
+    --muted:                0 0% 13%;
+    --muted-foreground:     0 0% 60%;
+
+    /* Accent — Celo gold */
+    --accent:               43 95% 67%;
+    --accent-foreground:    0 0% 4%;
+
+    /* Destructive */
+    --destructive:          0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Radius */
+    --radius:               0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Tabular numbers for all mono elements */
+  .font-mono,
+  [data-slot="amount"],
+  [data-slot="address"],
+  [data-slot="rate"] {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer utilities {
+  .text-primary-text   { color: hsl(0 0% 98%); }
+  .text-secondary-text { color: hsl(0 0% 60%); }
+  .text-tertiary-text  { color: hsl(0 0% 38%); }
+  .text-celo-green     { color: #35D07F; }
+  .text-celo-gold      { color: #FBCC5C; }
+  .bg-surface          { background-color: hsl(var(--surface)); }
+  .bg-surface-hover    { background-color: hsl(var(--surface-hover)); }
+}
