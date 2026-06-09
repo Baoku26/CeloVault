@@ -4,7 +4,7 @@ import { celo, celoAlfajores } from "viem/chains";
 
 export const wagmiConfig = getDefaultConfig({
   appName: "CeloVault",
-  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? "",
+  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "celovault_build_placeholder",
   chains: [celo, celoAlfajores],
   transports: {
     [celo.id]: http(process.env.NEXT_PUBLIC_CELO_RPC ?? "https://forno.celo.org"),
