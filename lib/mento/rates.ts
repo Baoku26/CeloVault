@@ -1,5 +1,5 @@
 import { publicClient } from "@/lib/celo/client";
-import { MENTO_BROKER } from "@/lib/celo/contracts";
+import { MENTO_BROKER, CELO_TOKEN } from "@/lib/celo/contracts";
 
 const BROKER_ABI = [
   {
@@ -51,6 +51,48 @@ export interface MentoRateQuote {
   exchangeId: `0x${string}`;
 }
 
+type Exchange = { exchangeId: `0x${string}`; assets: `0x${string}`[] };
+type ProviderExchanges = { provider: `0x${string}`; exchanges: Exchange[] };
+
+async function getAllExchanges(): Promise<ProviderExchanges[]> {
+  const providers = (await publicClient.readContract({
+    address: MENTO_BROKER,
+    abi: BROKER_ABI,
+    functionName: "getExchangeProviders",
+  })) as `0x${string}`[];
+
+  const results = await Promise.allSettled(
+    providers.map(async (provider) => {
+      const exchanges = (await publicClient.readContract({
+        address: provider,
+        abi: BIPOOL_ABI,
+        functionName: "getExchanges",
+      })) as Exchange[];
+      return { provider, exchanges };
+    })
+  );
+
+  return results
+    .filter((r): r is PromiseFulfilledResult<ProviderExchanges> => r.status === "fulfilled")
+    .map((r) => r.value);
+}
+
+function findDirectPool(
+  providerExchanges: ProviderExchanges[],
+  tokenA: string,
+  tokenB: string
+): { provider: `0x${string}`; exchange: Exchange } | null {
+  for (const { provider, exchanges } of providerExchanges) {
+    const match = exchanges.find(
+      (e) =>
+        e.assets.some((a) => a.toLowerCase() === tokenA) &&
+        e.assets.some((a) => a.toLowerCase() === tokenB)
+    );
+    if (match) return { provider, exchange: match };
+  }
+  return null;
+}
+
 export async function getMentoRate(
   tokenIn: `0x${string}`,
   tokenOut: `0x${string}`,
@@ -59,61 +101,78 @@ export async function getMentoRate(
   decimalsOut: number
 ): Promise<MentoRateQuote | null> {
   try {
-    const providers = (await publicClient.readContract({
-      address: MENTO_BROKER,
-      abi: BROKER_ABI,
-      functionName: "getExchangeProviders",
-    })) as `0x${string}`[];
+    const allExchanges = await getAllExchanges();
 
     const tokenInLower = tokenIn.toLowerCase();
     const tokenOutLower = tokenOut.toLowerCase();
+    const celoLower = CELO_TOKEN.toLowerCase();
 
-    for (const provider of providers) {
+    // 1. Try direct pool first — fall through on oracle failure ("no valid median" etc.)
+    const direct = findDirectPool(allExchanges, tokenInLower, tokenOutLower);
+
+    if (direct) {
       try {
-        const exchanges = (await publicClient.readContract({
-          address: provider,
-          abi: BIPOOL_ABI,
-          functionName: "getExchanges",
-        })) as { exchangeId: `0x${string}`; assets: `0x${string}`[] }[];
-
-        const match = exchanges.find(
-          (e) =>
-            e.assets.some((a) => a.toLowerCase() === tokenInLower) &&
-            e.assets.some((a) => a.toLowerCase() === tokenOutLower)
-        );
-
-        if (!match) {
-          console.log(`[mento] provider ${provider}: no pool for ${tokenIn}/${tokenOut} (${exchanges.length} pools scanned)`);
-          continue;
-        }
-
         const amountOut = (await publicClient.readContract({
           address: MENTO_BROKER,
           abi: BROKER_ABI,
           functionName: "getAmountOut",
-          args: [provider, match.exchangeId, tokenIn, tokenOut, amountIn],
+          args: [direct.provider, direct.exchange.exchangeId, tokenIn, tokenOut, amountIn],
         })) as bigint;
 
         const humanIn = Number(amountIn) / 10 ** decimalsIn;
         const humanOut = Number(amountOut) / 10 ** decimalsOut;
-        const rate = humanOut / humanIn;
 
         return {
           amountOut,
-          rate,
+          rate: humanOut / humanIn,
           source: "mento",
-          exchangeProvider: provider,
-          exchangeId: match.exchangeId,
+          exchangeProvider: direct.provider,
+          exchangeId: direct.exchange.exchangeId,
         };
-      } catch (err) {
-        // This provider uses a different interface — skip it
-        console.log(`[mento] provider ${provider}: getExchanges failed — ${(err as Error).message}`);
-        continue;
+      } catch {
+        // Direct pool oracle may be stale — try CELO-hop routing below
       }
     }
 
-    return null;
-  } catch {
+    // 2. Fall back: route through CELO (tokenIn → CELO → tokenOut)
+    // Most Mento stablecoins are pooled against CELO as the reserve asset.
+    const legA = findDirectPool(allExchanges, tokenInLower, celoLower);
+    const legB = findDirectPool(allExchanges, celoLower, tokenOutLower);
+
+    if (!legA || !legB) {
+      console.log(`[mento] no direct or CELO-routed pool for ${tokenIn}/${tokenOut}`);
+      return null;
+    }
+
+    const celoAmountOut = (await publicClient.readContract({
+      address: MENTO_BROKER,
+      abi: BROKER_ABI,
+      functionName: "getAmountOut",
+      args: [legA.provider, legA.exchange.exchangeId, tokenIn, CELO_TOKEN, amountIn],
+    })) as bigint;
+
+    if (celoAmountOut === BigInt(0)) return null;
+
+    const finalAmountOut = (await publicClient.readContract({
+      address: MENTO_BROKER,
+      abi: BROKER_ABI,
+      functionName: "getAmountOut",
+      args: [legB.provider, legB.exchange.exchangeId, CELO_TOKEN, tokenOut, celoAmountOut],
+    })) as bigint;
+
+    const humanIn = Number(amountIn) / 10 ** decimalsIn;
+    const humanOut = Number(finalAmountOut) / 10 ** decimalsOut;
+
+    return {
+      amountOut: finalAmountOut,
+      rate: humanOut / humanIn,
+      source: "mento",
+      // Report the first leg's provider/exchange as the entry point
+      exchangeProvider: legA.provider,
+      exchangeId: legA.exchange.exchangeId,
+    };
+  } catch (err) {
+    console.error("[mento] getMentoRate error:", (err as Error).message);
     return null;
   }
 }

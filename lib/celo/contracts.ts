@@ -5,19 +5,22 @@ export const IDENTITY_REGISTRY = "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432" as
 export const REPUTATION_REGISTRY = "0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" as const;
 
 export const USDC_ADAPTER = "0x2F25deB3848C207fc8E0c34035B3Ba7fC157602B" as const;
-export const USDT_ADAPTER = "0x0e2a3e05bc9a16f5292a6170456a710cb89c6f72" as const;
+export const USDT_ADAPTER = "0x0E2A3e05bc9A16F5292A6170456A710cb89C6f72" as const;
 
 export const TOKEN_ADDRESSES = {
-  USDm:  "0x765de816845861e75a25fca122bb6898b8b1282a" as const,
-  EURm:  "0xd8763cba276a3738e6de85b4b3bf5fded6d6ca73" as const,
+  USDm:  "0x765DE816845861e75A25fCA122bb6898B8B1282a" as const,
+  EURm:  "0xD8763CBa276a3738E6DE85b4b3bF5FDed6D6cA73" as const,
   NGNm:  "0xE2702Bd97ee33c88c8f6f92DA3B733608aa76F71" as const,
   KESm:  "0x456a3D042C0DbD3db53D5489e98dFb038553B0d0" as const,
   GHSm:  "0xfAeA5F3404bbA20D3cc2f8C4B0A888F55a3c7313" as const,
   USDC:  "0xcebA9300f2b948710d2653dD7B07f33A8B32118C" as const,
-  USDT:  "0x48065fbbe25f71c9282ddf5e1cd6d6a887483d5e" as const,
+  USDT:  "0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e" as const,
 } as const;
 
-export const MENTO_BROKER = "0x777a8255ca72412f0d706dc03c9d1987306b4caA" as const;
+export const MENTO_BROKER = "0x777A8255cA72412f0d706dc03C9D1987306B4CaD" as const;
+
+// CELO ERC-20 (used as reserve asset in Mento pools)
+export const CELO_TOKEN = "0x471EcE3750Da237f93B8E339c536989b8978a438" as const;
 
 // Uniswap V3 on Celo Mainnet
 export const UNISWAP_QUOTER_V2  = "0x82825d0554fA07f7FC52Ab63c961F330fdEFa8E8" as const;
