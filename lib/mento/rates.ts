@@ -69,38 +69,47 @@ export async function getMentoRate(
     const tokenOutLower = tokenOut.toLowerCase();
 
     for (const provider of providers) {
-      const exchanges = (await publicClient.readContract({
-        address: provider,
-        abi: BIPOOL_ABI,
-        functionName: "getExchanges",
-      })) as { exchangeId: `0x${string}`; assets: `0x${string}`[] }[];
+      try {
+        const exchanges = (await publicClient.readContract({
+          address: provider,
+          abi: BIPOOL_ABI,
+          functionName: "getExchanges",
+        })) as { exchangeId: `0x${string}`; assets: `0x${string}`[] }[];
 
-      const match = exchanges.find(
-        (e) =>
-          e.assets.some((a) => a.toLowerCase() === tokenInLower) &&
-          e.assets.some((a) => a.toLowerCase() === tokenOutLower)
-      );
+        const match = exchanges.find(
+          (e) =>
+            e.assets.some((a) => a.toLowerCase() === tokenInLower) &&
+            e.assets.some((a) => a.toLowerCase() === tokenOutLower)
+        );
 
-      if (!match) continue;
+        if (!match) {
+          console.log(`[mento] provider ${provider}: no pool for ${tokenIn}/${tokenOut} (${exchanges.length} pools scanned)`);
+          continue;
+        }
 
-      const amountOut = (await publicClient.readContract({
-        address: MENTO_BROKER,
-        abi: BROKER_ABI,
-        functionName: "getAmountOut",
-        args: [provider, match.exchangeId, tokenIn, tokenOut, amountIn],
-      })) as bigint;
+        const amountOut = (await publicClient.readContract({
+          address: MENTO_BROKER,
+          abi: BROKER_ABI,
+          functionName: "getAmountOut",
+          args: [provider, match.exchangeId, tokenIn, tokenOut, amountIn],
+        })) as bigint;
 
-      const humanIn = Number(amountIn) / 10 ** decimalsIn;
-      const humanOut = Number(amountOut) / 10 ** decimalsOut;
-      const rate = humanOut / humanIn;
+        const humanIn = Number(amountIn) / 10 ** decimalsIn;
+        const humanOut = Number(amountOut) / 10 ** decimalsOut;
+        const rate = humanOut / humanIn;
 
-      return {
-        amountOut,
-        rate,
-        source: "mento",
-        exchangeProvider: provider,
-        exchangeId: match.exchangeId,
-      };
+        return {
+          amountOut,
+          rate,
+          source: "mento",
+          exchangeProvider: provider,
+          exchangeId: match.exchangeId,
+        };
+      } catch (err) {
+        // This provider uses a different interface — skip it
+        console.log(`[mento] provider ${provider}: getExchanges failed — ${(err as Error).message}`);
+        continue;
+      }
     }
 
     return null;
