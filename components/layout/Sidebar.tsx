@@ -18,7 +18,7 @@ export function Sidebar() {
   return (
     <aside className="hidden lg:flex flex-col w-56 border-r border-border bg-background h-screen sticky top-0 py-6 px-3 shrink-0">
       <div className="flex items-center gap-2 px-3 mb-8">
-        <span className="text-lg font-semibold tracking-tight text-celo-green">CeloVault</span>
+        <span className="text-lg font-semibold tracking-tight text-celo-green">CVault</span>
       </div>
 
       <nav className="flex flex-col gap-1 flex-1">
