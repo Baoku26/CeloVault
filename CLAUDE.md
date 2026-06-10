@@ -7,7 +7,7 @@
 
 ## Project identity
 
-**CeloVault** is an autonomous multi-currency stablecoin wallet agent on Celo.
+**CVault** (formerly CeloVault) is an autonomous multi-currency stablecoin wallet agent on Celo.
 It tracks balances, auto-swaps at best rates, and pays in local currency.
 Registered as a first-class ERC-8004 onchain agent.
 
@@ -15,6 +15,10 @@ Registered as a first-class ERC-8004 onchain agent.
 - **Deadline:** June 15, 2026
 - **Chain:** Celo Mainnet (chainId: 42220) + Celo Sepolia Testnet (chainId: 44787)
 - **Author:** DML
+- **agentId:** #9226 on Celo Mainnet
+- **IPFS metadata URI:** `ipfs://QmVLhHjpYGQZPMk3L4DaDa29RDWXU8e7aZcfnJ3jZa91kY`
+- **Live frontend:** https://celovault.vercel.app
+- **Agent process:** https://celovault-production.up.railway.app
 
 ---
 
