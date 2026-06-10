@@ -1,11 +1,30 @@
 "use client";
 
+import { useEffect } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useConnect } from "wagmi";
+import { injected } from "wagmi/connectors";
 import { Button } from "@/components/ui/button";
 import { Wallet, LogOut, AlertTriangle } from "lucide-react";
 import { shortenAddress } from "@/lib/utils";
 
+function isMiniPay(): boolean {
+  return (
+    typeof window !== "undefined" &&
+    !!window.ethereum &&
+    (window.ethereum as { isMiniPay?: boolean }).isMiniPay === true
+  );
+}
+
 export function WalletConnect() {
+  const { connect } = useConnect();
+
+  useEffect(() => {
+    if (isMiniPay()) {
+      connect({ connector: injected({ target: "metaMask" }) });
+    }
+  }, [connect]);
+
   return (
     <ConnectButton.Custom>
       {({ account, chain, openConnectModal, openChainModal, openAccountModal, mounted }) => {
@@ -16,6 +35,8 @@ export function WalletConnect() {
         }
 
         if (!connected) {
+          // MiniPay auto-connect is in progress — suppress the button
+          if (isMiniPay()) return null;
           return (
             <Button variant="outline" size="sm" onClick={openConnectModal}>
               <Wallet className="mr-2 h-4 w-4" />

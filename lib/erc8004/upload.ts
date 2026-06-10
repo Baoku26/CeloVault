@@ -29,6 +29,9 @@ export async function uploadAgentCard(agentCard: AgentCard): Promise<string> {
 
 export function loadAgentCard(): AgentCard {
   const path = join(process.cwd(), "agent", "registration.json");
-  const raw = readFileSync(path, "utf-8");
+  const raw = readFileSync(path, "utf-8").replace(
+    /\$\{([^}]+)\}/g,
+    (_, key) => process.env[key] ?? ""
+  );
   return JSON.parse(raw) as AgentCard;
 }

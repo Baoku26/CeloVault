@@ -15,7 +15,9 @@
     "agent-dev": "tsx watch agent/index.ts",
     "agent-start": "tsx agent/index.ts",
     "agent-register": "tsx scripts/register-agent.ts",
-    "agent-register-mainnet": "tsx scripts/register-agent.ts --mainnet"
+    "agent-register-mainnet": "tsx scripts/register-agent.ts --mainnet",
+    "agent-update-uri": "tsx scripts/update-agent-uri.ts",
+    "agent-update-uri-mainnet": "tsx scripts/update-agent-uri.ts --mainnet"
   },
   "dependencies": {
     "@radix-ui/react-separator": "^1.1.9",

@@ -1,23 +1,22 @@
-import { createWalletClient, createPublicClient, http, toBytes, keccak256 } from "viem";
+import { createWalletClient, createPublicClient, http, toBytes, keccak256, toHex, zeroHash } from "viem";
 import { celo } from "viem/chains";
 import { privateKeyToAccount } from "viem/accounts";
 import { USDC_ADAPTER } from "@/lib/celo/fee-abstraction";
 import { REPUTATION_REGISTRY, REPUTATION_REGISTRY_ABI } from "./registry";
 
-const TAG_SWAP = toBytes("swap", { size: 32 });
-const TAG_CELOVAULT = toBytes("celovault", { size: 32 });
+const TAG_SWAP = toHex(toBytes("swap", { size: 32 }));
+const TAG_CELOVAULT = toHex(toBytes("celovault", { size: 32 }));
+
+// 0-100 integer score, no decimal places
+const VALUE_DECIMALS = 0;
 
 export interface FeedbackParams {
   agentId: bigint;
-  score: number;
-  uri?: string;
-  fileHash?: `0x${string}`;
+  score: number;      // 0–100
+  endpoint?: string;  // agent service endpoint this feedback is about
+  feedbackURI?: string;
 }
 
-/**
- * Submits ERC-8004 reputation feedback after a successful swap.
- * The agent wallet signs the feedback authorization (EIP-191).
- */
 export async function giveFeedback(params: FeedbackParams): Promise<`0x${string}`> {
   const rawKey = process.env.AGENT_PRIVATE_KEY;
   if (!rawKey) throw new Error("AGENT_PRIVATE_KEY is not set");
@@ -31,13 +30,12 @@ export async function giveFeedback(params: FeedbackParams): Promise<`0x${string}
     transport: http(rpc),
   });
 
-  const uri = params.uri ?? "";
-  const fileHash =
-    params.fileHash ??
-    (keccak256(toBytes(uri)) as `0x${string}`);
-
-  const feedbackMessage = `CeloVault feedback: agentId=${params.agentId} score=${params.score}`;
-  const feedbackAuth = await walletClient.signMessage({ message: feedbackMessage });
+  const endpoint = params.endpoint ?? (process.env.NEXT_PUBLIC_AGENT_API_URL ?? "");
+  const feedbackURI = params.feedbackURI ?? "";
+  const feedbackHash: `0x${string}` =
+    feedbackURI.length > 0
+      ? keccak256(toBytes(feedbackURI))
+      : zeroHash;
 
   const txHash = await walletClient.writeContract({
     address: REPUTATION_REGISTRY,
@@ -45,12 +43,13 @@ export async function giveFeedback(params: FeedbackParams): Promise<`0x${string}
     functionName: "giveFeedback",
     args: [
       params.agentId,
-      params.score,
-      TAG_SWAP as unknown as `0x${string}`,
-      TAG_CELOVAULT as unknown as `0x${string}`,
-      uri,
-      fileHash,
-      feedbackAuth,
+      BigInt(params.score),   // int128 value
+      VALUE_DECIMALS,         // uint8 valueDecimals
+      TAG_SWAP,               // bytes32 tag1
+      TAG_CELOVAULT,          // bytes32 tag2
+      endpoint,               // string endpoint
+      feedbackURI,            // string feedbackURI
+      feedbackHash,           // bytes32 feedbackHash
     ],
     feeCurrency: USDC_ADAPTER,
   });
@@ -60,21 +59,26 @@ export async function giveFeedback(params: FeedbackParams): Promise<`0x${string}
 
 export async function getReputation(
   agentId: bigint
-): Promise<{ totalScore: bigint; feedbackCount: bigint; avgScore: number }> {
+): Promise<{ count: bigint; sum: bigint; avgScore: number }> {
   const rpc = process.env.NEXT_PUBLIC_CELO_RPC ?? "https://forno.celo.org";
   const publicClient = createPublicClient({ chain: celo, transport: http(rpc) });
 
-  const [totalScore, feedbackCount] = (await publicClient.readContract({
+  const clients = (await publicClient.readContract({
     address: REPUTATION_REGISTRY,
     abi: REPUTATION_REGISTRY_ABI,
-    functionName: "getReputation",
+    functionName: "getClients",
     args: [agentId],
-  })) as [bigint, bigint];
+  })) as `0x${string}`[];
 
-  const avgScore =
-    feedbackCount > BigInt(0)
-      ? Number(totalScore) / Number(feedbackCount)
-      : 0;
+  if (clients.length === 0) return { count: 0n, sum: 0n, avgScore: 0 };
 
-  return { totalScore, feedbackCount, avgScore };
+  const [count, sum] = (await publicClient.readContract({
+    address: REPUTATION_REGISTRY,
+    abi: REPUTATION_REGISTRY_ABI,
+    functionName: "getSummary",
+    args: [agentId, clients],
+  })) as [bigint, bigint, number];
+
+  const avgScore = count > 0n ? Number(sum) / Number(count) : 0;
+  return { count, sum, avgScore };
 }

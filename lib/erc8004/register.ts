@@ -1,7 +1,11 @@
 import { createWalletClient, createPublicClient, http, parseEventLogs } from "viem";
 import { celo, celoAlfajores } from "viem/chains";
 import { privateKeyToAccount } from "viem/accounts";
-import { IDENTITY_REGISTRY, IDENTITY_REGISTRY_ABI } from "./registry";
+import {
+  IDENTITY_REGISTRY,
+  IDENTITY_REGISTRY_SEPOLIA,
+  IDENTITY_REGISTRY_ABI,
+} from "./registry";
 import { uploadAgentCard, loadAgentCard } from "./upload";
 
 const MAINNET_RPC_FALLBACKS = [
@@ -59,6 +63,9 @@ export async function registerAgent(
   const rpc = await pickRpc(fallbacks);
   console.log(`[register] Using: ${rpc}`);
 
+  const registryAddress =
+    network === "mainnet" ? IDENTITY_REGISTRY : IDENTITY_REGISTRY_SEPOLIA;
+
   const account = privateKeyToAccount(privateKey);
   const walletClient = createWalletClient({ account, chain, transport: http(rpc) });
   const publicClient = createPublicClient({ chain, transport: http(rpc) });
@@ -75,11 +82,11 @@ export async function registerAgent(
     console.log(`[register] Using cached Agent URI: ${agentURI}`);
   }
 
-  console.log(`[register] Calling register() on ${network}...`);
+  console.log(`[register] Calling register() on ${network} (${registryAddress})...`);
   // feeCurrency omitted intentionally — registration is a one-time setup op.
   // Production swap ops use USDC feeCurrency in feedback.ts / swap.ts.
   const txHash = await walletClient.writeContract({
-    address: IDENTITY_REGISTRY,
+    address: registryAddress,
     abi: IDENTITY_REGISTRY_ABI,
     functionName: "register",
     args: [agentURI],

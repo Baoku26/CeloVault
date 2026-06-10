@@ -6,7 +6,7 @@ export default function SwapPage() {
       <div>
         <h1 className="text-xl font-semibold tracking-tight">Swap</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Best rate across Mento Protocol and Uniswap V3. Gas paid in USDC.
+          Best rate across Mento Protocol and Uniswap V3. Network fee paid in USDC.
         </p>
       </div>
       <SwapCard />

@@ -22,8 +22,8 @@ export function AgentIdentityCard() {
   const isRegistered = Boolean(agentId);
 
   const scanUrl = agentId
-    ? `https://8004scan.io/agents/${agentId}`
-    : "https://8004scan.io";
+    ? `https://8004scan.io/agents/celo/${agentId}`
+    : "https://8004scan.io/agents/celo";
 
   return (
     <motion.div {...fadeUp}>

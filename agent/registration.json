@@ -6,11 +6,11 @@
   "services": [
     {
       "name": "web",
-      "endpoint": "NEXT_PUBLIC_AGENT_API_URL"
+      "endpoint": "${NEXT_PUBLIC_AGENT_API_URL}"
     },
     {
       "name": "health",
-      "endpoint": "NEXT_PUBLIC_AGENT_API_URL/health"
+      "endpoint": "${NEXT_PUBLIC_AGENT_API_URL}/health"
     }
   ]
 }

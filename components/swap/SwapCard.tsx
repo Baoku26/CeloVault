@@ -166,7 +166,7 @@ export function SwapCard() {
                   { label: "Rate",        value: bestRate ? `1 ${pair.tokenIn} = ${bestRate.rate.toLocaleString("en", { maximumFractionDigits: 2 })} ${pair.tokenOut}` : "—" },
                   { label: "Route",       value: rates?.best === "mento" ? "Mento Protocol" : "Uniswap V3" },
                   { label: "Slippage",    value: "1%" },
-                  { label: "Gas",         value: "Paid in USDC" },
+                  { label: "Network fee",  value: "Paid in USDC" },
                 ].map(({ label, value }) => (
                   <div key={label} className="flex justify-between px-4 py-2.5">
                     <span className="text-muted-foreground">{label}</span>
