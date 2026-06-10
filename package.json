@@ -17,9 +17,12 @@
     "agent-register": "tsx scripts/register-agent.ts",
     "agent-register-mainnet": "tsx scripts/register-agent.ts --mainnet",
     "agent-update-uri": "tsx scripts/update-agent-uri.ts",
-    "agent-update-uri-mainnet": "tsx scripts/update-agent-uri.ts --mainnet"
+    "agent-update-uri-mainnet": "tsx scripts/update-agent-uri.ts --mainnet",
+    "agent-mcp": "tsx agent/mcp.ts",
+    "agent-mcp-info": "tsx agent/mcp.ts --info"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "@radix-ui/react-separator": "^1.1.9",
     "@radix-ui/react-switch": "^1.3.0",
     "@rainbow-me/rainbowkit": "^2.2.11",
@@ -39,7 +42,8 @@
     "tailwind-merge": "^2.6.1",
     "tailwindcss-animate": "^1.0.7",
     "viem": "^2.52.2",
-    "wagmi": "^2.19.5"
+    "wagmi": "^2.19.5",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",

@@ -11,6 +11,14 @@
     {
       "name": "health",
       "endpoint": "${NEXT_PUBLIC_AGENT_API_URL}/health"
+    },
+    {
+      "name": "A2A",
+      "endpoint": "${NEXT_PUBLIC_AGENT_API_URL}/a2a/manifest"
+    },
+    {
+      "name": "MCP",
+      "endpoint": "${NEXT_PUBLIC_AGENT_API_URL}/mcp"
     }
   ]
 }

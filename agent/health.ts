@@ -1,18 +1,22 @@
 import express from "express";
 import type { AgentEngine } from "@/lib/agent/engine";
+import { createA2ARouter } from "./a2a";
 
 export function startHealthServer(engine: AgentEngine, port = 3001) {
   const app = express();
   app.use(express.json());
 
-  // CORS — allow Next.js frontend (Vercel) to call this directly or via proxy
+  // CORS — allow Next.js frontend (Vercel) and external agents to call this
   app.use((_req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "GET, PATCH, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
     next();
   });
   app.options("*", (_req, res) => res.sendStatus(204));
+
+  // A2A interop routes — mounted at /a2a/*
+  app.use("/a2a", createA2ARouter(engine));
 
   app.get("/health", (_req, res) => {
     const status = engine.getStatus();
