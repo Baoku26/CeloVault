@@ -27,21 +27,29 @@ Registered as a first-class ERC-8004 onchain agent.
 ```
 celovault/
 ├── app/                        # Next.js 14 App Router
-│   ├── (dashboard)/            # Main dashboard route group
-│   │   ├── page.tsx            # Dashboard home
-│   │   ├── layout.tsx          # Dashboard shell with sidebar
-│   │   ├── swap/page.tsx       # Swap interface
+│   ├── page.tsx                # → re-exports LandingPage (public marketing, no sidebar)
+│   ├── layout.tsx              # Root layout — Providers only, no sidebar
+│   ├── (dashboard)/            # Dashboard route group (sidebar + topbar shell)
+│   │   ├── layout.tsx          # Dashboard shell: Sidebar + Topbar + MobileNav
+│   │   ├── dashboard/page.tsx  # Dashboard home at /dashboard (balances, agent status)
+│   │   ├── swap/page.tsx       # Swap interface at /swap
 │   │   ├── history/page.tsx    # Transaction history
 │   │   └── agent/page.tsx      # Agent config + ERC-8004 status
+│   ├── .well-known/
+│   │   └── agent.json/route.ts # ERC-8004 agent discovery endpoint
 │   ├── api/                    # API routes
 │   │   ├── balances/route.ts   # Read stablecoin balances
 │   │   ├── rates/route.ts      # Fetch FX rates from Mento + Uniswap V3
 │   │   ├── swap/route.ts       # Trigger manual swap
 │   │   └── agent/status/route.ts
-│   ├── globals.css
-│   └── layout.tsx              # Root layout with providers
+│   └── globals.css
 ├── components/
 │   ├── ui/                     # shadcn/ui base primitives (owned, not imported)
+│   ├── marketing/              # Public landing page components (no sidebar)
+│   │   ├── LandingPage.tsx     # Full landing page — all sections
+│   │   ├── MarketingNav.tsx    # Sticky nav with scroll-blur (no sidebar)
+│   │   ├── AgentTickDemo.tsx   # Animated terminal showing live agent tick
+│   │   └── DeveloperSection.tsx # A2A + MCP tabbed section
 │   ├── wallet/                 # Wallet-specific components
 │   ├── agent/                  # Agent status + ERC-8004 components
 │   ├── charts/                 # FX rate charts (Recharts)
@@ -60,18 +68,25 @@ celovault/
 │   │   ├── rates.ts            # Uniswap V3 quote on Celo
 │   │   └── swap.ts             # Uniswap V3 swap execution
 │   ├── erc8004/
-│   │   ├── registry.ts         # Identity + Reputation registry calls
+│   │   ├── registry.ts         # Identity + Reputation registry calls (mainnet + sepolia)
 │   │   ├── register.ts         # Agent registration flow
-│   │   └── feedback.ts         # Submit reputation feedback post-swap
+│   │   ├── feedback.ts         # Submit reputation feedback post-swap
+│   │   └── upload.ts           # Upload agent card JSON to IPFS (Pinata)
 │   ├── agent/
 │   │   ├── engine.ts           # Core agent loop (interval, threshold logic)
 │   │   ├── router.ts           # Best-rate routing between Mento / Uniswap
 │   │   └── config.ts           # Agent config types + defaults
+│   ├── motion.ts               # Framer Motion presets: fadeUp, staggerChildren, scaleIn
 │   └── utils.ts                # Shared helpers (format, parse, etc.)
 ├── agent/                      # Standalone Node.js agent process
 │   ├── index.ts                # Entry point (runs the agent loop)
 │   ├── wallet.ts               # Agent wallet (private key from env)
-│   └── health.ts               # HTTP health check endpoint
+│   ├── health.ts               # HTTP health check + CORS + mounts A2A router
+│   ├── a2a.ts                  # A2A REST API router (5 endpoints)
+│   ├── mcp.ts                  # MCP stdio server (4 tools)
+│   └── registration.json       # Agent card template (env var substitution at upload time)
+├── scripts/
+│   └── update-agent-uri.ts     # Re-upload metadata to IPFS + call setAgentURI onchain
 ├── hooks/
 │   ├── useBalances.ts          # Poll multi-token balances
 │   ├── useRates.ts             # Poll FX rates
@@ -87,6 +102,17 @@ celovault/
 ├── tasks.md                    # Current task list
 └── .env.local                  # Secrets (never commit)
 ```
+
+### Route map
+
+| URL | File | Notes |
+|---|---|---|
+| `/` | `app/page.tsx` → `LandingPage` | Public marketing page, no sidebar |
+| `/dashboard` | `app/(dashboard)/dashboard/page.tsx` | Dashboard home with balances + agent status |
+| `/swap` | `app/(dashboard)/swap/page.tsx` | Swap interface |
+| `/history` | `app/(dashboard)/history/page.tsx` | Transaction history |
+| `/agent` | `app/(dashboard)/agent/page.tsx` | Agent config + ERC-8004 status |
+| `/.well-known/agent.json` | `app/.well-known/agent.json/route.ts` | ERC-8004 discovery |
 
 ---
 
@@ -104,11 +130,13 @@ celovault/
 | Wallet connect | RainbowKit or custom (MiniPay-aware) |
 | Charts | Recharts |
 | Agent backend | Node.js + TypeScript (separate process) |
+| A2A API | Express REST router — `agent/a2a.ts` |
+| MCP server | `@modelcontextprotocol/sdk` v1.29 + `zod` v4 — `agent/mcp.ts` |
 | ERC-8004 SDK | @chaoschain/sdk |
 | Celo fee abstraction | viem `feeCurrency` field |
 | Deployment (frontend) | Vercel |
 | Deployment (agent) | Railway |
-| Agent JSON hosting | IPFS via nft.storage |
+| Agent JSON hosting | IPFS via Pinata |
 
 ---
 
@@ -252,7 +280,43 @@ The standalone agent (`agent/index.ts`) must:
 7. Submit ERC-8004 reputation feedback after every successful swap
 8. Log all activity to stdout in structured JSON format
 9. Expose `/health` HTTP endpoint (Railway health check)
-10. Be fully stateless — restartable at any time without data loss
+10. Mount A2A router at `/a2a/*` via `agent/health.ts`
+11. Be fully stateless — restartable at any time without data loss
+
+---
+
+## Agent interoperability
+
+### A2A REST API (`agent/a2a.ts`)
+
+Mounted at `/a2a/*` by `agent/health.ts`. All endpoints open except `POST /a2a/swap`.
+
+| Endpoint | Auth | Purpose |
+|---|---|---|
+| `GET /a2a/manifest` | open | Full agent capability card (ERC-8004 compatible) |
+| `GET /a2a/status` | open | Active state, config, reputation score |
+| `GET /a2a/balances?address=0x…` | open | Multicall balances for any wallet |
+| `POST /a2a/quote` | open | Best-rate quote, Mento vs Uniswap V3 — no execution |
+| `POST /a2a/swap` | Bearer `A2A_API_KEY` | Execute swap at best rate, gas in USDC |
+
+Auth logic: if `A2A_API_KEY` env var is not set, the swap endpoint is open (dev mode).
+
+### MCP server (`agent/mcp.ts`)
+
+Stdio transport. Run with `pnpm agent-mcp`. Four tools:
+
+| Tool | Auth | Description |
+|---|---|---|
+| `cvault_quote` | none | Best rate quote — read-only |
+| `cvault_swap` | `A2A_API_KEY` | Execute swap |
+| `cvault_status` | none | Agent state + reputation |
+| `cvault_balances` | none | Live balances via multicall |
+
+Each tool calls the A2A REST API over HTTP. Run `pnpm agent-mcp --info` to print the Claude Desktop config snippet.
+
+### ERC-8004 discovery
+
+`GET /.well-known/agent.json` — served by `app/.well-known/agent.json/route.ts`. Returns the agent card with skills array, ERC-8004 identity, and capability flags.
 
 ---
 
@@ -261,11 +325,29 @@ The standalone agent (`agent/index.ts`) must:
 ```bash
 # .env.local (never commit)
 NEXT_PUBLIC_CELO_RPC=https://forno.celo.org
-AGENT_PRIVATE_KEY=0x...          # Agent wallet private key
-AGENT_WALLET_ADDRESS=0x...       # Derived from above
-NEXT_PUBLIC_AGENT_API_URL=...    # Railway agent URL
-NFTSTORAGE_API_KEY=...           # For IPFS agent JSON upload
+AGENT_PRIVATE_KEY=0x...              # Agent wallet private key
+AGENT_WALLET_ADDRESS=0x...           # Derived from above
+NEXT_PUBLIC_AGENT_API_URL=...        # Railway agent URL
+PINATA_JWT=...                       # Pinata API JWT for IPFS uploads
+A2A_API_KEY=...                      # Bearer token for POST /a2a/swap — Railway only, never Vercel
+AGENT_ID=9226                        # ERC-8004 agentId on Celo Mainnet
 ```
+
+---
+
+## Known gotchas
+
+1. **`Button` component does NOT implement Radix `Slot`.** The `asChild` prop is destructured out so it doesn't leak to the DOM `<button>`, but it doesn't actually render children as the root element. Never use `<Button asChild>` — instead use `<Link className={buttonVariants(...)}>` or `<a className={buttonVariants(...)}>` directly.
+
+2. **Dashboard home is at `/dashboard`, not `/`.** `app/page.tsx` is the marketing landing page. `app/(dashboard)/dashboard/page.tsx` is the dashboard. Sidebar nav links point to `/dashboard`.
+
+3. **`agent/registration.json` uses `${VAR}` template syntax.** The `loadAgentCard()` function in `lib/erc8004/upload.ts` substitutes env vars at upload time. Never hardcode URLs in `registration.json`.
+
+4. **`A2A_API_KEY` is Railway-only.** Never set it on Vercel. The frontend has no business calling `/a2a/swap` — that's agent-to-agent only.
+
+5. **ERC-8004 Sepolia registries differ from mainnet.** `registry.ts` exports both. `register.ts` selects based on the `network` param — always pass it explicitly.
+
+6. **`toBytes` output is `Uint8Array`, not `0x${string}`.** Use `toHex(toBytes(...))` in `feedback.ts` — never cast with `as unknown as \`0x${string}\``.
 
 ---
 
@@ -291,3 +373,5 @@ At the start of every Claude Code session:
 3. Check `planning.md` — for architectural decisions before touching `lib/`
 4. Never create a new file without checking if one already exists for that purpose
 5. After completing any task, update `tasks.md` and `memory.md`
+6. When touching agent interoperability: re-read `agent/a2a.ts` and `agent/mcp.ts` — don't rely on memory of the endpoint/tool signatures
+7. When touching the landing page: marketing components live in `components/marketing/`, dashboard components stay in `components/` subdirs — don't mix them
