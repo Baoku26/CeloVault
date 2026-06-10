@@ -6,7 +6,7 @@ import { LayoutDashboard, ArrowLeftRight, History, Bot } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/swap", label: "Swap", icon: ArrowLeftRight },
   { href: "/history", label: "History", icon: History },
   { href: "/agent", label: "Agent", icon: Bot },
