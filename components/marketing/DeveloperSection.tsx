@@ -71,51 +71,59 @@ const MCP_TOOLS = [
 ];
 
 const QUOTE_SNIPPET = `// POST /a2a/quote — no auth required
-const res = await fetch("https://${BASE}/a2a/quote", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    tokenIn:  "USDm",
-    tokenOut: "NGNm",
-    amountIn: "10"
-  })
-});
+const res = await fetch(
+  "https://${BASE}/a2a/quote",
+  {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      tokenIn:  "USDm",
+      tokenOut: "NGNm",
+      amountIn: "10"
+    })
+  }
+);
 
 // Response
 {
   "rate":    1634.20,
   "source":  "mento",
   "spread":  0.12,
-  "mento":   { "rate": 1634.20, "amountOut": "163420..." },
-  "uniswap": { "rate": 1629.85, "amountOut": "162985..." },
+  "mento":   { "rate": 1634.20, ... },
+  "uniswap": { "rate": 1629.85, ... },
   "timestamp": 1718012400
 }
 
-// POST /a2a/swap — requires Authorization header
-const swap = await fetch("https://${BASE}/a2a/swap", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    "Authorization": "Bearer <A2A_API_KEY>"
-  },
-  body: JSON.stringify({
-    tokenIn:    "USDm",
-    tokenOut:   "NGNm",
-    amountIn:   "10",
-    slippageBps: 100  // 1% — optional, default 100
-  })
-});
-// { txHash, amountIn, amountOut, source, timestamp }`;
+// POST /a2a/swap — Bearer token required
+const swap = await fetch(
+  "https://${BASE}/a2a/swap",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer <A2A_API_KEY>"
+    },
+    body: JSON.stringify({
+      tokenIn:     "USDm",
+      tokenOut:    "NGNm",
+      amountIn:    "10",
+      slippageBps: 100
+    })
+  }
+);
+// { txHash, amountIn, amountOut, source }`;
 
-const MCP_SNIPPET = `// 1. Add to Claude Desktop config:
-// ~/Library/Application Support/Claude/claude_desktop_config.json
+const MCP_SNIPPET = `// claude_desktop_config.json
+// Mac: ~/Library/Application Support/Claude/
+// Win: %APPDATA%\\Claude\\
 
 {
   "mcpServers": {
     "cvault": {
       "command": "pnpm",
       "args": [
-        "--prefix", "/absolute/path/to/CeloVault",
+        "--prefix",
+        "/absolute/path/to/CeloVault",
         "agent-mcp"
       ],
       "env": {
@@ -127,21 +135,22 @@ const MCP_SNIPPET = `// 1. Add to Claude Desktop config:
   }
 }
 
-// 2. Print your exact config with local path pre-filled:
+// Print config with your path pre-filled:
 pnpm agent-mcp --info
 
-// 3. Then ask Claude:
+// Then ask Claude:
 // "Use cvault_quote to check the USDm → NGNm
-//  rate for 50 USDm, then swap if rate > 1,600"`;
+//  rate, then swap 10 USDm if rate > 1,600"`;
 
 function CodeBlock({ code, label }: { code: string; label: string }) {
   return (
-    <div className="rounded-xl border border-border overflow-hidden">
+    <div className="rounded-xl border border-border overflow-hidden min-w-0">
       <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-surface-nested">
         <Terminal className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-        <span className="text-[11px] font-mono text-muted-foreground">{label}</span>
+        <span className="text-[11px] font-mono text-muted-foreground truncate">{label}</span>
       </div>
-      <pre className="p-5 text-[11.5px] font-mono text-zinc-300 leading-relaxed overflow-x-auto whitespace-pre bg-black">
+      {/* overflow-x-auto on <pre> keeps the code scrollable without blowing out page width */}
+      <pre className="p-4 text-[11px] font-mono text-zinc-300 leading-relaxed overflow-x-auto whitespace-pre bg-black">
         {code}
       </pre>
     </div>
@@ -175,14 +184,14 @@ export function DeveloperSection() {
         </p>
       </div>
 
-      {/* Tab switcher */}
-      <div className="flex gap-1 p-1 rounded-lg border border-border bg-surface w-fit">
+      {/* Tab switcher — full width on mobile, auto on sm+ */}
+      <div className="flex gap-1 p-1 rounded-lg border border-border bg-surface w-full sm:w-fit">
         {(["rest", "mcp"] as Tab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
             className={cn(
-              "px-4 py-1.5 rounded-md text-sm font-mono transition-colors",
+              "flex-1 sm:flex-none px-4 py-1.5 rounded-md text-sm font-mono transition-colors text-center",
               tab === t
                 ? "bg-surface-nested text-foreground"
                 : "text-muted-foreground hover:text-foreground"
@@ -205,18 +214,19 @@ export function DeveloperSection() {
             className="grid lg:grid-cols-2 gap-8 items-start"
           >
             {/* Endpoint list */}
-            <div className="space-y-2.5">
-              <p className="text-[11px] font-mono text-muted-foreground mb-5 space-y-0.5">
-                <span className="block">Base: https://{BASE}</span>
-                <span className="block">Discovery: /.well-known/agent.json</span>
-              </p>
+            <div className="space-y-2.5 min-w-0">
+              <div className="text-[11px] font-mono text-muted-foreground mb-5 space-y-0.5">
+                <p className="truncate">Base: https://{BASE}</p>
+                <p>Discovery: /.well-known/agent.json</p>
+              </div>
 
               {REST_ENDPOINTS.map(({ method, path, auth, desc }) => (
                 <div
                   key={path}
                   className="rounded-lg border border-border bg-surface p-4 space-y-1.5"
                 >
-                  <div className="flex items-center gap-2 flex-wrap">
+                  {/* Single row: badge + path + auth badge — no flex-wrap so ml-auto works */}
+                  <div className="flex items-center gap-2 min-w-0">
                     <span
                       className={cn(
                         "font-mono text-[11px] px-1.5 py-0.5 rounded font-semibold shrink-0",
@@ -227,9 +237,11 @@ export function DeveloperSection() {
                     >
                       {method}
                     </span>
-                    <span className="font-mono text-xs text-foreground">{path}</span>
+                    <span className="font-mono text-xs text-foreground truncate flex-1 min-w-0">
+                      {path}
+                    </span>
                     {auth && (
-                      <span className="ml-auto text-[10px] font-mono text-muted-foreground border border-border rounded px-1.5 py-0.5 shrink-0">
+                      <span className="text-[10px] font-mono text-muted-foreground border border-border rounded px-1.5 py-0.5 shrink-0">
                         Bearer
                       </span>
                     )}
@@ -244,12 +256,12 @@ export function DeveloperSection() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors pt-1"
               >
-                View source → agent/a2a.ts <ExternalLink className="h-3 w-3" />
+                View source → agent/a2a.ts <ExternalLink className="h-3 w-3 shrink-0" />
               </a>
             </div>
 
             {/* Code snippet */}
-            <div className="space-y-4">
+            <div className="space-y-4 min-w-0">
               <CodeBlock code={QUOTE_SNIPPET} label="fetch · quote + swap" />
               <div className="rounded-lg border border-border bg-surface p-4 space-y-1">
                 <p className="text-xs font-medium">ERC-8004 discovery</p>
@@ -258,8 +270,7 @@ export function DeveloperSection() {
                   <span className="font-mono text-foreground">/a2a/manifest</span>{" "}
                   and{" "}
                   <span className="font-mono text-foreground">/.well-known/agent.json</span>{" "}
-                  endpoints return the full agent card including all skill
-                  definitions and ERC-8004 identity — compatible with the{" "}
+                  endpoints return the full agent card — compatible with the{" "}
                   <a
                     href="https://eips.ethereum.org/EIPS/eip-8004"
                     target="_blank"
@@ -282,29 +293,29 @@ export function DeveloperSection() {
             className="grid lg:grid-cols-2 gap-8 items-start"
           >
             {/* Tool list */}
-            <div className="space-y-2.5">
-              <p className="text-[11px] font-mono text-muted-foreground mb-5 space-y-0.5">
-                <span className="block">Protocol: Model Context Protocol (stdio)</span>
-                <span className="block">SDK: @modelcontextprotocol/sdk v1.29</span>
-              </p>
+            <div className="space-y-2.5 min-w-0">
+              <div className="text-[11px] font-mono text-muted-foreground mb-5 space-y-0.5">
+                <p>Protocol: Model Context Protocol (stdio)</p>
+                <p>SDK: @modelcontextprotocol/sdk v1.29</p>
+              </div>
 
               {MCP_TOOLS.map(({ name, params, auth, desc }) => (
                 <div
                   key={name}
                   className="rounded-lg border border-border bg-surface p-4 space-y-1.5"
                 >
-                  <div className="flex items-start gap-2 flex-wrap">
+                  <div className="flex items-center gap-2 min-w-0">
                     <span className="font-mono text-xs text-celo-green font-medium shrink-0">
                       {name}
                     </span>
                     {params !== "—" && (
-                      <span className="font-mono text-[11px] text-muted-foreground mt-0.5">
+                      <span className="font-mono text-[11px] text-muted-foreground truncate flex-1 min-w-0">
                         ({params})
                       </span>
                     )}
                     {auth && (
-                      <span className="ml-auto text-[10px] font-mono text-muted-foreground border border-border rounded px-1.5 py-0.5 shrink-0">
-                        A2A_API_KEY
+                      <span className="text-[10px] font-mono text-muted-foreground border border-border rounded px-1.5 py-0.5 shrink-0">
+                        key
                       </span>
                     )}
                   </div>
@@ -318,12 +329,12 @@ export function DeveloperSection() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors pt-1"
               >
-                View source → agent/mcp.ts <ExternalLink className="h-3 w-3" />
+                View source → agent/mcp.ts <ExternalLink className="h-3 w-3 shrink-0" />
               </a>
             </div>
 
             {/* Config snippet */}
-            <div className="space-y-4">
+            <div className="space-y-4 min-w-0">
               <CodeBlock code={MCP_SNIPPET} label="claude_desktop_config.json" />
               <div className="rounded-lg border border-border bg-surface p-4 space-y-1">
                 <p className="text-xs font-medium">Print your config</p>
@@ -332,8 +343,8 @@ export function DeveloperSection() {
                   <span className="font-mono text-foreground bg-surface-nested px-1.5 py-0.5 rounded">
                     pnpm agent-mcp --info
                   </span>{" "}
-                  to output the exact Claude Desktop JSON with your local repo
-                  path and Railway URL pre-filled.
+                  to output the exact Claude Desktop JSON with your local path
+                  and Railway URL pre-filled.
                 </p>
               </div>
             </div>
