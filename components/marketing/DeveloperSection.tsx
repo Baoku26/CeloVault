@@ -15,7 +15,7 @@ const REST_ENDPOINTS = [
     method: "GET",
     path: "/a2a/manifest",
     auth: false,
-    desc: "Agent capability card — all skills, supported tokens, ERC-8004 identity, and auth requirements",
+    desc: "Agent capability card all skills, supported tokens, ERC-8004 identity, and auth requirements",
   },
   {
     method: "GET",
@@ -177,7 +177,7 @@ export function DeveloperSection() {
           Open to the ecosystem.
         </h2>
         <p className="text-muted-foreground leading-relaxed">
-          CVault exposes a REST A2A API and an MCP server — so other agents can
+          CVault exposes a REST A2A API and an MCP server so other agents can
           quote rates and execute swaps without building their own Mento/Uniswap
           routing, and developers can wire CVault directly into Claude, Cursor,
           or any MCP-compatible client.

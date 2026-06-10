@@ -37,7 +37,7 @@ const PROBLEMS = [
   {
     icon: Fuel,
     title: "Gas friction in CELO adds up",
-    body: "Most wallets force you to hold CELO for gas. CVault pays gas in USDC via Celo's fee abstraction — you never touch CELO.",
+    body: "Most wallets force you to hold CELO for gas. CVault pays gas in USDC via Celo's fee abstraction you never touch CELO.",
   },
 ];
 
@@ -45,7 +45,7 @@ const STEPS = [
   {
     n: "01",
     title: "Set your threshold",
-    body: "Configure the rate you want — e.g. swap when 1 USDm > 1,600 NGNm. Set minimum and maximum swap sizes.",
+    body: "Configure the rate you want e.g. swap when 1 USDm > 1,600 NGNm. Set minimum and maximum swap sizes.",
   },
   {
     n: "02",
@@ -88,7 +88,7 @@ const FEATURES = [
   {
     icon: Lock,
     title: "Non-custodial",
-    body: "Your keys, your tokens. CVault is a read+execute agent — it never holds your funds, only executes swaps you've pre-authorised.",
+    body: "Your keys, your tokens. CVault is a read+execute agent it never holds your funds, only executes swaps you've pre-authorised.",
   },
 ];
 
@@ -156,7 +156,7 @@ export default function LandingPage() {
             </motion.h1>
 
             <motion.p variants={fadeUp} className="text-lg text-muted-foreground leading-relaxed max-w-lg">
-              CVault monitors 7 stablecoins every 60 seconds and auto-swaps at your rate threshold — gas paid in USDC, zero CELO required.
+              CVault monitors 7 stablecoins every 60 seconds and auto-swaps at your rate threshold gas paid in USDC, zero CELO required.
             </motion.p>
 
             <motion.div variants={fadeUp} className="flex flex-wrap gap-3">
@@ -213,7 +213,7 @@ export default function LandingPage() {
             The NGN/USD rate moves while you&apos;re asleep.
           </h2>
           <p className="text-muted-foreground leading-relaxed">
-            African stablecoin holders lose value not from bad assets — but from friction, timing, and manual processes that no longer need to be manual.
+            African stablecoin holders lose value not from bad assets but from friction, timing, and manual processes that no longer need to be manual.
           </p>
         </div>
 
