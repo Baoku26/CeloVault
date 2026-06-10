@@ -1,6 +1,6 @@
 {
   "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
-  "name": "CeloVault",
+  "name": "CVault",
   "description": "Autonomous multi-currency stablecoin wallet agent on Celo. Monitors balances, finds best swap rates across Mento Protocol and Uniswap V3, and auto-swaps USDm to local currencies (NGNm, KESm, GHSm, EURm) at configurable thresholds. Gas paid entirely in USDC via fee abstraction.",
   "image": "ipfs://bafybeiczsscdsbs7ffqz55asqdf3smv6klcw3gofszvwlyarci47bgf354",
   "services": [

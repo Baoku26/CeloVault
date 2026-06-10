@@ -1,4 +1,4 @@
-# CeloVault — Autonomous Multi-Currency Stablecoin Agent
+# CVault — Autonomous Multi-Currency Stablecoin Agent
 
 > A fully autonomous stablecoin wallet agent on Celo. Track balances, auto-swap at best rates, and pay in local currency — all without touching a button.
 

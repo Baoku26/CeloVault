@@ -41,7 +41,7 @@ export function AgentIdentityCard() {
                 <Bot className="h-4 w-4 text-celo-green" />
               </div>
               <div>
-                <div className="text-sm font-medium">CeloVault Agent</div>
+                <div className="text-sm font-medium">CVault Agent</div>
                 <div className="text-xs text-muted-foreground">ERC-8004 Identity</div>
               </div>
             </div>
