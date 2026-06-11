@@ -37,7 +37,9 @@ export async function getBestRate(
     return { best: "mento", amountOut: BigInt(0), rate: 0, mento: null, uniswap: null, spread: 0 };
   }
 
-  const useMento = mentoRate >= uniswapRate;
+  // Pick by rate, but never select a side whose quote is null — when only one
+  // provider returns a quote (or a zero-rate tie at amountIn=0), use whichever exists.
+  const useMento = mentoQuote != null && (uniswapQuote == null || mentoRate >= uniswapRate);
   const winner = useMento ? mentoQuote : uniswapQuote;
 
   return {

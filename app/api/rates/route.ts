@@ -18,6 +18,14 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "Unknown token symbol" }, { status: 400 });
   }
 
+  // No rate to quote for a zero/invalid amount — short-circuit before any RPC.
+  if (!(amount > 0)) {
+    return NextResponse.json(
+      { mento: null, uniswap: null, best: "mento", spread: 0, timestamp: Math.floor(Date.now() / 1000) } satisfies RatesResponse,
+      { headers: { "Cache-Control": "public, max-age=12" } }
+    );
+  }
+
   const amountIn = BigInt(Math.floor(amount * 10 ** tokenIn.decimals));
   const cacheKey = `rates:${tokenInSymbol}-${tokenOutSymbol}:${amount}`;
 
