@@ -153,7 +153,8 @@
   - Verify: feeCurrency = USDC adapter (no CELO used)
   - Verify: ERC-8004 feedback submitted
   - Verify: 8004scan rank updated
-- [ ] Test MiniPay: open deployed URL in Opera Mini → auto-connect
+- [x] [Jun 11] MiniPay companion route `/m` — mobile-first vault view + one-tap "Convert to dollars" (local→USDm) at best rate. `components/minipay/CompanionApp.tsx` + `app/m/page.tsx`. Reuses `/api/balances`, `/api/rates`, `/api/swap`. MiniPay copy-compliant (no gas/crypto/CELO). Execution routes via agent-backed `/api/swap` for v1 — user-signed custody is the documented upgrade.
+- [ ] Test MiniPay: open deployed URL in Opera Mini → auto-connect (now: `/m` route)
 - [ ] Stress test: run agent for 2 hours, verify continuous activity
 - [ ] Fix any bugs found during testing
 - [ ] Screenshot: 8004scan leaderboard showing CeloVault rank
